@@ -52,7 +52,7 @@ export function PromptComposer({
           value={prompt}
           onChange={(event) => onPromptChange(event.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="例如：把当前会话界面重构成分层布局，并补齐验证步骤。"
+          placeholder="read: src/index.ts &#10;grep: TODO packages/ &#10;bash: Get-Location"
           disabled={disabled}
         />
 

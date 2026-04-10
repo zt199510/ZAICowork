@@ -798,6 +798,136 @@
   gap: 10px;
 }
 
+/* ── ToolCard ─────────────────────────────────────── */
+
+.tool-card {
+  margin: 6px 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid var(--color-border, #333);
+  background: var(--color-surface-tool, #1a1a2e);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.tool-card--running {
+  border-left-color: #5b8def;
+}
+
+.tool-card--completed {
+  border-left-color: #3ddc84;
+}
+
+.tool-card--failed {
+  border-left-color: #f44336;
+}
+
+.tool-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tool-card__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tool-card__dot--running {
+  background: #5b8def;
+  animation: tool-pulse 1.2s ease-in-out infinite;
+}
+
+.tool-card__dot--completed {
+  background: #3ddc84;
+}
+
+.tool-card__dot--failed {
+  background: #f44336;
+}
+
+@keyframes tool-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.tool-card__name {
+  font-weight: 600;
+  color: var(--color-text-primary, #e0e0e0);
+}
+
+.tool-card__summary {
+  color: var(--color-text-secondary, #999);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tool-card__duration {
+  color: var(--color-text-tertiary, #666);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.tool-card__body {
+  margin: 6px 0 0;
+  color: var(--color-text-secondary, #bbb);
+}
+
+.tool-card__body--running {
+  color: #5b8def;
+}
+
+.tool-card__output {
+  margin: 8px 0 0;
+}
+
+.tool-card__output summary {
+  cursor: pointer;
+  color: var(--color-text-secondary, #999);
+  font-size: 12px;
+  user-select: none;
+}
+
+.tool-card__output pre {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  background: var(--color-surface-code, #111);
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-x: auto;
+  max-height: 300px;
+  overflow-y: auto;
+  color: var(--color-text-primary, #ccc);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.tool-card__hint {
+  margin: 6px 0 0;
+  color: #f9a825;
+  font-size: 12px;
+}
+
+.message-empty-hint {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--color-text-secondary, #888);
+}
+
+.message-empty-hint code {
+  background: var(--color-surface-code, #222);
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
 .module-page__metrics {
   margin-top: 28px;
   display: grid;

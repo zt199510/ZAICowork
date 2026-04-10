@@ -14,12 +14,16 @@ import type {
   PrimaryView,
   RightPanelTab,
   Session,
+  TimelineItem,
+  ToolCallEntry,
   WorkMode,
 } from './types/workbench'
 import './App.css'
 
 type SessionRecord = Session & {
   messages: Message[]
+  toolCalls: Map<string, ToolCallEntry>
+  timeline: TimelineItem[]
   draft: string
 }
 
@@ -30,6 +34,8 @@ const initialSessionRecords: SessionRecord[] = [
     updatedAt: '2 分钟前',
     summary: '请把用户服务拆分成 domain/application/infrastructure 三层，并给出迁移步骤。',
     draft: '请把用户服务拆分成 domain/application/infrastructure 三层，并给出迁移步骤。',
+    toolCalls: new Map(),
+    timeline: [],
     messages: [
       {
         id: 'm-1',
@@ -50,6 +56,8 @@ const initialSessionRecords: SessionRecord[] = [
     updatedAt: '15 分钟前',
     summary: '为前端增加工具调用状态和事件透出，并保持 SSE 协议清晰可调试。',
     draft: '',
+    toolCalls: new Map(),
+    timeline: [],
     messages: [
       {
         id: 'm-3',
@@ -69,6 +77,8 @@ const initialSessionRecords: SessionRecord[] = [
     updatedAt: '昨天',
     summary: '定位 lint 失败根因，优先修复严格类型和无用变量问题。',
     draft: '',
+    toolCalls: new Map(),
+    timeline: [],
     messages: [
       {
         id: 'm-5',
@@ -136,9 +146,9 @@ const eventSummary = (event: StreamEvent) => {
     case 'error':
       return event.payload.message
     case 'tool_call_started':
-      return `${event.payload.toolName} ${event.payload.argumentsJson}`
+      return `${event.payload.toolName}: ${event.payload.inputSummary}`
     case 'tool_call_completed':
-      return `${event.payload.resultPreview} (${event.payload.durationMs}ms)`
+      return `${event.payload.toolName} ${event.payload.status}: ${event.payload.resultPreview} (${event.payload.durationMs}ms)`
   }
 }
 
@@ -176,6 +186,7 @@ function App() {
 
   const prompt = useMemo(() => activeSession?.draft ?? '', [activeSession])
   const messages = useMemo(() => activeSession?.messages ?? [], [activeSession])
+  const timeline = useMemo(() => activeSession?.timeline ?? [], [activeSession])
 
   const inspectorEvents = useMemo<EventPreview[]>(
     () =>
@@ -198,7 +209,7 @@ function App() {
     }
 
     messageList.scrollTop = messageList.scrollHeight
-  }, [activeView, messages])
+  }, [activeView, messages, timeline])
 
   useEffect(
     () => () => {
@@ -289,9 +300,45 @@ function App() {
         setErrorMessage(event.payload.message)
         appendAssistantFallback(event.runId, `运行失败：${event.payload.message}`)
         break
-      case 'tool_call_started':
-      case 'tool_call_completed':
+      case 'tool_call_started': {
+        const { callId, toolName, inputSummary } = event.payload
+        const sessionId = runSessionMapRef.current.get(event.runId)
+        if (!sessionId) break
+        updateSessionRecord(sessionId, (session) => {
+          const entry: ToolCallEntry = { callId, toolName, inputSummary, status: 'running' }
+          const nextToolCalls = new Map(session.toolCalls)
+          nextToolCalls.set(callId, entry)
+          return {
+            ...session,
+            toolCalls: nextToolCalls,
+            timeline: [...session.timeline, { kind: 'tool_call', data: entry }],
+          }
+        })
         break
+      }
+      case 'tool_call_completed': {
+        const { callId, toolName, status, resultPreview, outputText, durationMs, errorCode, retryHint } = event.payload
+        const sessionIdCompleted = runSessionMapRef.current.get(event.runId)
+        if (!sessionIdCompleted) break
+        updateSessionRecord(sessionIdCompleted, (session) => {
+          const entry: ToolCallEntry = {
+            callId, toolName, inputSummary: session.toolCalls.get(callId)?.inputSummary ?? toolName,
+            status, resultPreview, outputText, durationMs, errorCode, retryHint,
+          }
+          const nextToolCalls = new Map(session.toolCalls)
+          nextToolCalls.set(callId, entry)
+          return {
+            ...session,
+            toolCalls: nextToolCalls,
+            timeline: session.timeline.map((item) =>
+              item.kind === 'tool_call' && item.data.callId === callId
+                ? { ...item, data: entry }
+                : item,
+            ),
+          }
+        })
+        break
+      }
     }
   }
 
@@ -325,6 +372,8 @@ function App() {
         summary: '等待任务目标',
         draft: '',
         messages: [],
+        toolCalls: new Map(),
+        timeline: [],
       },
       ...currentSessions,
     ])
@@ -380,6 +429,8 @@ function App() {
       updatedAt: '刚刚',
       summary: trimmedPrompt,
       draft: '',
+      toolCalls: new Map(),
+      timeline: [],
       messages: [
         ...session.messages,
         {
@@ -445,7 +496,7 @@ function App() {
 
             {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
 
-            <MessageTimeline ref={messageListRef} messages={messages} />
+            <MessageTimeline ref={messageListRef} messages={messages} timeline={timeline} />
 
             <PromptComposer
               prompt={prompt}

@@ -42,9 +42,9 @@ const summarizeEvent = (event: StreamEvent) => {
     case 'error':
       return `error: ${event.payload.message}`
     case 'tool_call_started':
-      return `tool_call_started: ${event.payload.toolName}`
+      return `tool_call_started: ${event.payload.toolName} — ${event.payload.inputSummary}`
     case 'tool_call_completed':
-      return `tool_call_completed: ${event.payload.resultPreview}`
+      return `tool_call_completed: ${event.payload.toolName} ${event.payload.status} — ${event.payload.resultPreview}`
   }
 }
 

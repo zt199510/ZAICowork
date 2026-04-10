@@ -1,8 +1,26 @@
+import type { ToolCallStatus } from '@aiide/shared-protocol'
+
 export type Session = {
   id: string
   title: string
   updatedAt: string
   summary: string
+}
+
+export type TimelineItem =
+  | { kind: 'message'; data: Message }
+  | { kind: 'tool_call'; data: ToolCallEntry }
+
+export type ToolCallEntry = {
+  callId: string
+  toolName: string
+  inputSummary: string
+  status: ToolCallStatus
+  resultPreview?: string
+  outputText?: string
+  durationMs?: number
+  errorCode?: string
+  retryHint?: string
 }
 
 export type Message = {

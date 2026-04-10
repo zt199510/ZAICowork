@@ -1,5 +1,9 @@
 export type RunState = 'idle' | 'running' | 'completed' | 'failed' | 'canceled'
 
+export type ToolName = 'read' | 'grep' | 'bash'
+
+export type ToolCallStatus = 'running' | 'completed' | 'failed'
+
 export type StreamEventType =
   | 'run_started'
   | 'token_delta'
@@ -20,16 +24,38 @@ export interface TokenDeltaPayload {
   text: string
 }
 
+export interface ReadToolInput {
+  path: string
+}
+
+export interface GrepToolInput {
+  pattern: string
+  path?: string
+}
+
+export interface BashToolInput {
+  command: string
+}
+
+export type ToolInput = ReadToolInput | GrepToolInput | BashToolInput
+
 export interface ToolCallStartedPayload {
   callId: string
-  toolName: string
-  argumentsJson: string
+  toolName: ToolName
+  input: ToolInput
+  inputSummary: string
 }
 
 export interface ToolCallCompletedPayload {
   callId: string
+  toolName: ToolName
+  status: ToolCallStatus
   resultPreview: string
+  outputText: string
   durationMs: number
+  exitCode?: number
+  errorCode?: string
+  retryHint?: string
 }
 
 export interface StatusPayload {

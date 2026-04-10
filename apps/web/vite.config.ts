@@ -20,6 +20,8 @@ const agentProjectPath = fileURLToPath(
   new URL('../../services/agent-dotnet/src/AIIde.Agent/AIIde.Agent.csproj', import.meta.url),
 )
 
+const monorepoRoot = fileURLToPath(new URL('../..', import.meta.url))
+
 function localAgentBridge() {
   const runs = new Map<string, RunRecord>()
 
@@ -141,6 +143,7 @@ function localAgentBridge() {
 
     const child = spawn('dotnet', ['run', '--project', agentProjectPath], {
       stdio: ['pipe', 'pipe', 'pipe'],
+      cwd: monorepoRoot,
     })
 
     run.child = child
