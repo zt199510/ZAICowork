@@ -1,0 +1,87 @@
+:root {
+  color-scheme: dark;
+  --background: #0d0f13;
+  --background-elevated: #11141a;
+  --surface: rgba(20, 23, 29, 0.94);
+  --surface-soft: rgba(24, 27, 35, 0.88);
+  --sidebar: rgba(14, 16, 20, 0.98);
+  --sidebar-surface: rgba(18, 20, 25, 0.96);
+  --sidebar-hover: rgba(255, 255, 255, 0.05);
+  --sidebar-active: rgba(255, 255, 255, 0.08);
+  --foreground: #f5f6f8;
+  --foreground-soft: #d7dae0;
+  --muted: #9198a4;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --accent-cyan: #79c2ff;
+  --accent-emerald: #7dd3ae;
+  --accent-amber: #e8bc73;
+  --shadow-soft: 0 24px 48px rgba(0, 0, 0, 0.18);
+  font-family: 'IBM Plex Sans', 'Segoe UI', 'PingFang SC', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--foreground);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(232, 188, 115, 0.08), transparent 28%),
+    radial-gradient(circle at 88% 14%, rgba(121, 194, 255, 0.08), transparent 24%),
+    linear-gradient(180deg, #0b0c10 0%, #0f1116 100%);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border: 0;
+}
+
+textarea,
+input {
+  outline: none;
+}
+
+::selection {
+  background: rgba(121, 194, 255, 0.28);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}

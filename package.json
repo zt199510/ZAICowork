@@ -1,0 +1,17 @@
+{
+  "name": "aiide-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AIIde monorepo (web client + shared protocol + agent backend)",
+  "scripts": {
+    "dev": "npm run dev --workspace @aiide/web",
+    "build": "npm run build --workspace @aiide/web",
+    "build:agent": "dotnet build services/agent-dotnet/src/AIIde.Agent/AIIde.Agent.csproj",
+    "lint": "npm run lint --workspace @aiide/web",
+    "preview": "npm run preview --workspace @aiide/web"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
