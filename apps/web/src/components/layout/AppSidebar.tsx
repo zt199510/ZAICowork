@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { FolderTree, PlugZap, Plus, Search, Sparkles, Workflow } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import type { ModuleView, PrimaryView, Session } from '../../types/workbench'
 
 type PrimarySidebarProps = {

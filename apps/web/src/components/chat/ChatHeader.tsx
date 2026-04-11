@@ -1,5 +1,5 @@
-import { Briefcase, CircleHelp, Code2, FolderTree, ShieldCheck } from 'lucide-react'
-import type { BridgeState, RunState } from '@aiide/shared-protocol'
+import { FolderTree } from 'lucide-react'
+import type { BridgeState } from '@aiide/shared-protocol'
 import type { WorkMode } from '../../types/workbench'
 
 const bridgeLabel: Record<BridgeState, string> = {
@@ -12,32 +12,16 @@ const bridgeLabel: Record<BridgeState, string> = {
 type ChatHeaderProps = {
   title: string
   summary: string
-  runState: RunState
+  runState: string
   statusText: string
   workMode: WorkMode
   bridgeState: BridgeState | null
   onWorkModeChange: (mode: WorkMode) => void
 }
 
-const modeOptions: Array<{
-  value: WorkMode
-  label: string
-  icon: typeof CircleHelp
-}> = [
-  { value: 'clarify', label: 'Clarify', icon: CircleHelp },
-  { value: 'cowork', label: 'Cowork', icon: Briefcase },
-  { value: 'code', label: 'Code', icon: Code2 },
-  { value: 'acp', label: 'ACP', icon: ShieldCheck },
-]
-
 export function ChatHeader({
   title,
-  summary,
-  runState,
-  statusText,
-  workMode,
   bridgeState,
-  onWorkModeChange,
 }: ChatHeaderProps) {
   return (
     <header className="chat-workspace-header">

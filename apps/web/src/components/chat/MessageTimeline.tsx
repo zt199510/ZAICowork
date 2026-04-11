@@ -8,7 +8,6 @@ type MessageTimelineProps = {
 
 function ToolCard({ entry }: { entry: ToolCallEntry }) {
   const isRunning = entry.status === 'running'
-  const isFailed = entry.status === 'failed'
 
   return (
     <article className={`tool-card tool-card--${entry.status}`}>

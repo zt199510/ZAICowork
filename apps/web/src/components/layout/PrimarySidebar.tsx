@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { FolderTree, PlugZap, Plus, Search, Sparkles, Workflow } from 'lucide-react'
+import { FolderTree, Plus, Search } from 'lucide-react'
 import type { ModuleView, PrimaryView, Session } from '../../types/workbench'
 
 type PrimarySidebarProps = {
@@ -106,9 +106,7 @@ export function PrimarySidebar({
     <aside className="primary-sidebar" aria-label="Chat Sessions" style={{ width }}>
       <header className="primary-sidebar__header">
         <div className="primary-sidebar__title-row">
-          <h2 className="primary-sidebar__title">
-            {activeActivity === 'chat' ? 'SESSIONS' : activeActivity.toUpperCase()}
-          </h2>
+          <h2 className="primary-sidebar__title">SESSIONS</h2>
           <button
             type="button"
             className="sidebar-action-icon"
@@ -142,18 +140,12 @@ export function PrimarySidebar({
             onClick={() => onSelectSession(session.id)}
           >
             <div className="session-item__icon">
-              {session.status === 'running' ? (
-                <Sparkles size={14} className="status-running" />
-              ) : session.status === 'error' ? (
-                <PlugZap size={14} className="status-error" />
-              ) : (
-                <FolderTree size={14} />
-              )}
+              <FolderTree size={14} />
             </div>
             <div className="session-item__info">
               <div className="session-item__title">{session.title}</div>
               <div className="session-item__meta">
-                {session.model} · {new Date(session.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {session.updatedAt}
               </div>
             </div>
           </div>

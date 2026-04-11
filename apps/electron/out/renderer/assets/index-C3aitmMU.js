@@ -133,7 +133,7 @@ function T$1(a) {
   throw a._result;
 }
 var U$1 = { current: null }, V$1 = { transition: null }, W$1 = { ReactCurrentDispatcher: U$1, ReactCurrentBatchConfig: V$1, ReactCurrentOwner: K$1 };
-function X$1() {
+function X$2() {
   throw Error("act(...) is not supported in production builds of React.");
 }
 react_production_min.Children = { map: S$1, forEach: function(a, b, e) {
@@ -161,7 +161,7 @@ react_production_min.PureComponent = G$1;
 react_production_min.StrictMode = q$1;
 react_production_min.Suspense = w;
 react_production_min.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = W$1;
-react_production_min.act = X$1;
+react_production_min.act = X$2;
 react_production_min.cloneElement = function(a, b, e) {
   if (null === a || void 0 === a) throw Error("React.cloneElement(...): The argument must be a React element, but you passed " + a + ".");
   var d = C$1({}, a.props), c = a.key, k2 = a.ref, h = a._owner;
@@ -213,7 +213,7 @@ react_production_min.startTransition = function(a) {
     V$1.transition = b;
   }
 };
-react_production_min.unstable_act = X$1;
+react_production_min.unstable_act = X$2;
 react_production_min.useCallback = function(a, b) {
   return U$1.current.useCallback(a, b);
 };
@@ -5009,7 +5009,7 @@ function Wj(a, b, c) {
   if (5 === d || 6 === d) a = a.stateNode, b ? c.insertBefore(a, b) : c.appendChild(a);
   else if (4 !== d && (a = a.child, null !== a)) for (Wj(a, b, c), a = a.sibling; null !== a; ) Wj(a, b, c), a = a.sibling;
 }
-var X = null, Xj = false;
+var X$1 = null, Xj = false;
 function Yj(a, b, c) {
   for (c = c.child; null !== c; ) Zj(a, b, c), c = c.sibling;
 }
@@ -5022,23 +5022,23 @@ function Zj(a, b, c) {
     case 5:
       U || Lj(c, b);
     case 6:
-      var d = X, e = Xj;
-      X = null;
+      var d = X$1, e = Xj;
+      X$1 = null;
       Yj(a, b, c);
-      X = d;
+      X$1 = d;
       Xj = e;
-      null !== X && (Xj ? (a = X, c = c.stateNode, 8 === a.nodeType ? a.parentNode.removeChild(c) : a.removeChild(c)) : X.removeChild(c.stateNode));
+      null !== X$1 && (Xj ? (a = X$1, c = c.stateNode, 8 === a.nodeType ? a.parentNode.removeChild(c) : a.removeChild(c)) : X$1.removeChild(c.stateNode));
       break;
     case 18:
-      null !== X && (Xj ? (a = X, c = c.stateNode, 8 === a.nodeType ? Kf(a.parentNode, c) : 1 === a.nodeType && Kf(a, c), bd(a)) : Kf(X, c.stateNode));
+      null !== X$1 && (Xj ? (a = X$1, c = c.stateNode, 8 === a.nodeType ? Kf(a.parentNode, c) : 1 === a.nodeType && Kf(a, c), bd(a)) : Kf(X$1, c.stateNode));
       break;
     case 4:
-      d = X;
+      d = X$1;
       e = Xj;
-      X = c.stateNode.containerInfo;
+      X$1 = c.stateNode.containerInfo;
       Xj = true;
       Yj(a, b, c);
-      X = d;
+      X$1 = d;
       Xj = e;
       break;
     case 0:
@@ -5095,23 +5095,23 @@ function ck(a, b) {
       a: for (; null !== h; ) {
         switch (h.tag) {
           case 5:
-            X = h.stateNode;
+            X$1 = h.stateNode;
             Xj = false;
             break a;
           case 3:
-            X = h.stateNode.containerInfo;
+            X$1 = h.stateNode.containerInfo;
             Xj = true;
             break a;
           case 4:
-            X = h.stateNode.containerInfo;
+            X$1 = h.stateNode.containerInfo;
             Xj = true;
             break a;
         }
         h = h.return;
       }
-      if (null === X) throw Error(p(160));
+      if (null === X$1) throw Error(p(160));
       Zj(f2, g, e);
-      X = null;
+      X$1 = null;
       Xj = false;
       var k2 = e.alternate;
       null !== k2 && (k2.return = null);
@@ -7089,7 +7089,7 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$m = [
+const __iconNode$h = [
   [
     "path",
     {
@@ -7098,14 +7098,14 @@ const __iconNode$m = [
     }
   ]
 ];
-const Activity = createLucideIcon("activity", __iconNode$m);
+const Activity = createLucideIcon("activity", __iconNode$h);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$l = [
+const __iconNode$g = [
   [
     "path",
     {
@@ -7115,25 +7115,14 @@ const __iconNode$l = [
   ],
   ["rect", { x: "14", y: "2", width: "8", height: "8", rx: "1", key: "88lufb" }]
 ];
-const Blocks = createLucideIcon("blocks", __iconNode$l);
+const Blocks = createLucideIcon("blocks", __iconNode$g);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$k = [
-  ["path", { d: "M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16", key: "jecpp" }],
-  ["rect", { width: "20", height: "14", x: "2", y: "6", rx: "2", key: "i6l2r4" }]
-];
-const Briefcase = createLucideIcon("briefcase", __iconNode$k);
-/**
- * @license lucide-react v1.8.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$j = [
+const __iconNode$f = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -7145,38 +7134,14 @@ const __iconNode$j = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("calendar-days", __iconNode$j);
+const CalendarDays = createLucideIcon("calendar-days", __iconNode$f);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$i = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3", key: "1u773s" }],
-  ["path", { d: "M12 17h.01", key: "p32p05" }]
-];
-const CircleQuestionMark = createLucideIcon("circle-question-mark", __iconNode$i);
-/**
- * @license lucide-react v1.8.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$h = [
-  ["path", { d: "m18 16 4-4-4-4", key: "1inbqp" }],
-  ["path", { d: "m6 8-4 4 4 4", key: "15zrgr" }],
-  ["path", { d: "m14.5 4-5 16", key: "e7oirm" }]
-];
-const CodeXml = createLucideIcon("code-xml", __iconNode$h);
-/**
- * @license lucide-react v1.8.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$g = [
+const __iconNode$e = [
   [
     "path",
     {
@@ -7185,14 +7150,14 @@ const __iconNode$g = [
     }
   ]
 ];
-const FolderOpen = createLucideIcon("folder-open", __iconNode$g);
+const FolderOpen = createLucideIcon("folder-open", __iconNode$e);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$f = [
+const __iconNode$d = [
   [
     "path",
     {
@@ -7203,14 +7168,14 @@ const __iconNode$f = [
   ["path", { d: "m21 21-1.9-1.9", key: "1g2n9r" }],
   ["circle", { cx: "17", cy: "17", r: "3", key: "18b49y" }]
 ];
-const FolderSearch = createLucideIcon("folder-search", __iconNode$f);
+const FolderSearch = createLucideIcon("folder-search", __iconNode$d);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$e = [
+const __iconNode$c = [
   [
     "path",
     {
@@ -7228,28 +7193,40 @@ const __iconNode$e = [
   ["path", { d: "M3 5a2 2 0 0 0 2 2h3", key: "f2jnh7" }],
   ["path", { d: "M3 3v13a2 2 0 0 0 2 2h3", key: "k8epm1" }]
 ];
-const FolderTree = createLucideIcon("folder-tree", __iconNode$e);
+const FolderTree = createLucideIcon("folder-tree", __iconNode$c);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$d = [
+const __iconNode$b = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["path", { d: "M12 16v-4", key: "1dtifu" }],
+  ["path", { d: "M12 8h.01", key: "e9boi3" }]
+];
+const Info = createLucideIcon("info", __iconNode$b);
+/**
+ * @license lucide-react v1.8.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$a = [
   ["path", { d: "M13 5h8", key: "a7qcls" }],
   ["path", { d: "M13 12h8", key: "h98zly" }],
   ["path", { d: "M13 19h8", key: "c3s6r1" }],
   ["path", { d: "m3 17 2 2 4-4", key: "1jhpwq" }],
   ["rect", { x: "3", y: "4", width: "6", height: "6", rx: "1", key: "cif1o7" }]
 ];
-const ListTodo = createLucideIcon("list-todo", __iconNode$d);
+const ListTodo = createLucideIcon("list-todo", __iconNode$a);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$c = [
+const __iconNode$9 = [
   ["path", { d: "M3 5h1", key: "1mv5vm" }],
   ["path", { d: "M3 12h1", key: "lp3yf2" }],
   ["path", { d: "M3 19h1", key: "w6f3n9" }],
@@ -7260,47 +7237,7 @@ const __iconNode$c = [
   ["path", { d: "M13 12h8", key: "h98zly" }],
   ["path", { d: "M13 19h8", key: "c3s6r1" }]
 ];
-const Logs = createLucideIcon("logs", __iconNode$c);
-/**
- * @license lucide-react v1.8.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$b = [
-  [
-    "path",
-    {
-      d: "M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z",
-      key: "18887p"
-    }
-  ]
-];
-const MessageSquare = createLucideIcon("message-square", __iconNode$b);
-/**
- * @license lucide-react v1.8.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$a = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
-  ["path", { d: "M15 3v18", key: "14nvp0" }],
-  ["path", { d: "m8 9 3 3-3 3", key: "12hl5m" }]
-];
-const PanelRightClose = createLucideIcon("panel-right-close", __iconNode$a);
-/**
- * @license lucide-react v1.8.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$9 = [
-  ["rect", { width: "18", height: "18", x: "3", y: "3", rx: "2", key: "afitv7" }],
-  ["path", { d: "M15 3v18", key: "14nvp0" }],
-  ["path", { d: "m10 15-3-3 3-3", key: "1pgupc" }]
-];
-const PanelRightOpen = createLucideIcon("panel-right-open", __iconNode$9);
+const Logs = createLucideIcon("logs", __iconNode$9);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7310,14 +7247,13 @@ const PanelRightOpen = createLucideIcon("panel-right-open", __iconNode$9);
 const __iconNode$8 = [
   [
     "path",
-    { d: "M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z", key: "goz73y" }
-  ],
-  ["path", { d: "m2 22 3-3", key: "19mgm9" }],
-  ["path", { d: "M7.5 13.5 10 11", key: "7xgeeb" }],
-  ["path", { d: "M10.5 16.5 13 14", key: "10btkg" }],
-  ["path", { d: "m18 3-4 4h6l-4 4", key: "16psg9" }]
+    {
+      d: "M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z",
+      key: "18887p"
+    }
+  ]
 ];
-const PlugZap = createLucideIcon("plug-zap", __iconNode$8);
+const MessageSquare = createLucideIcon("message-square", __iconNode$8);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7325,10 +7261,18 @@ const PlugZap = createLucideIcon("plug-zap", __iconNode$8);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$7 = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "M12 5v14", key: "s699le" }]
+  [
+    "path",
+    {
+      d: "M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z",
+      key: "1a0edw"
+    }
+  ],
+  ["path", { d: "M12 22V12", key: "d0xqtd" }],
+  ["polyline", { points: "3.29 7 12 12 20.71 7", key: "ousv84" }],
+  ["path", { d: "m7.5 4.27 9 5.15", key: "1c824w" }]
 ];
-const Plus = createLucideIcon("plus", __iconNode$7);
+const Package = createLucideIcon("package", __iconNode$7);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7336,10 +7280,10 @@ const Plus = createLucideIcon("plus", __iconNode$7);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$6 = [
-  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
-  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "M12 5v14", key: "s699le" }]
 ];
-const Search = createLucideIcon("search", __iconNode$6);
+const Plus = createLucideIcon("plus", __iconNode$6);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7347,12 +7291,10 @@ const Search = createLucideIcon("search", __iconNode$6);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$5 = [
-  ["path", { d: "M14 17H5", key: "gfn3mx" }],
-  ["path", { d: "M19 7h-9", key: "6i9tg" }],
-  ["circle", { cx: "17", cy: "17", r: "3", key: "18b49y" }],
-  ["circle", { cx: "7", cy: "7", r: "3", key: "dfmy0x" }]
+  ["path", { d: "m21 21-4.34-4.34", key: "14j7rj" }],
+  ["circle", { cx: "11", cy: "11", r: "8", key: "4ej97u" }]
 ];
-const Settings2 = createLucideIcon("settings-2", __iconNode$5);
+const Search = createLucideIcon("search", __iconNode$5);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7360,16 +7302,12 @@ const Settings2 = createLucideIcon("settings-2", __iconNode$5);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$4 = [
-  [
-    "path",
-    {
-      d: "M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915",
-      key: "1i5ecw"
-    }
-  ],
-  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
+  ["path", { d: "M14 17H5", key: "gfn3mx" }],
+  ["path", { d: "M19 7h-9", key: "6i9tg" }],
+  ["circle", { cx: "17", cy: "17", r: "3", key: "18b49y" }],
+  ["circle", { cx: "7", cy: "7", r: "3", key: "dfmy0x" }]
 ];
-const Settings = createLucideIcon("settings", __iconNode$4);
+const Settings2 = createLucideIcon("settings-2", __iconNode$4);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7380,13 +7318,13 @@ const __iconNode$3 = [
   [
     "path",
     {
-      d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
-      key: "oel41y"
+      d: "M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915",
+      key: "1i5ecw"
     }
   ],
-  ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
+  ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }]
 ];
-const ShieldCheck = createLucideIcon("shield-check", __iconNode$3);
+const Settings = createLucideIcon("settings", __iconNode$3);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7436,114 +7374,58 @@ const WandSparkles = createLucideIcon("wand-sparkles", __iconNode$1);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode = [
-  ["rect", { width: "8", height: "8", x: "3", y: "3", rx: "2", key: "by2w9f" }],
-  ["path", { d: "M7 11v4a2 2 0 0 0 2 2h4", key: "xkn7yn" }],
-  ["rect", { width: "8", height: "8", x: "13", y: "13", rx: "2", key: "1cgmvn" }]
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
 ];
-const Workflow = createLucideIcon("workflow", __iconNode);
+const X = createLucideIcon("x", __iconNode);
 const bridgeLabel = {
-  idle: "连接中",
-  ready: "已连接",
-  reconnecting: "重连中",
-  failed: "不可用"
+  idle: "Connecting",
+  ready: "Connected",
+  reconnecting: "Reconnecting",
+  failed: "Unavailable"
 };
-const modeOptions = [
-  { value: "clarify", label: "Clarify", icon: CircleQuestionMark },
-  { value: "cowork", label: "Cowork", icon: Briefcase },
-  { value: "code", label: "Code", icon: CodeXml },
-  { value: "acp", label: "ACP", icon: ShieldCheck }
-];
 function ChatHeader({
   title,
-  summary,
-  runState,
-  statusText,
-  workMode,
-  bridgeState,
-  onWorkModeChange
+  bridgeState
 }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "chat-header", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-header__top-row", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-kicker", children: "AIIde Workspace" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "chat-header__title", children: title }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "chat-header__summary", children: summary })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-header__meta", children: [
-        bridgeState && bridgeState !== "ready" ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `status-pill status-pill--bridge-${bridgeState}`, children: bridgeLabel[bridgeState] }) : null,
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `status-pill status-pill--${runState}`, children: statusText }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-pill", children: "GPT-5.4" })
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-header__bottom-row", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "mode-switch", role: "tablist", "aria-label": "会话模式", children: modeOptions.map((option) => {
-        const Icon2 = option.icon;
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-          "button",
-          {
-            type: "button",
-            className: `mode-switch__button ${workMode === option.value ? "is-active" : ""}`,
-            "data-mode": option.value,
-            onClick: () => onWorkModeChange(option.value),
-            children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { className: "mode-switch__icon" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: option.label })
-            ]
-          },
-          option.value
-        );
-      }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-header__path", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(FolderTree, { className: "chat-header__path-icon" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "apps/web · services/agent-dotnet · shared-protocol" })
-      ] })
-    ] })
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "chat-workspace-header", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-workspace-header__main", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "chat-workspace-header__title", children: title }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-workspace-header__meta", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "connection-status", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(FolderTree, { size: 14, className: "folder-icon" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "workspace-path", children: "ZAICowork" }),
+      bridgeState && bridgeState !== "ready" && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `bridge-pill bridge-pill--${bridgeState}`, children: bridgeLabel[bridgeState] })
+    ] }) })
   ] });
 }
 function ToolCard({ entry }) {
   const isRunning = entry.status === "running";
-  const isFailed = entry.status === "failed";
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("article", { className: `tool-card tool-card--${entry.status}`, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tool-card__header", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `tool-card__dot tool-card__dot--${entry.status}` }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tool-card__name", children: entry.toolName }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tool-card__summary", children: entry.inputSummary }),
-      entry.durationMs != null && !isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "tool-card__duration", children: [
+      entry.durationMs != null && !isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "tool-card__duration", style: { marginLeft: "auto", fontSize: "10px", color: "var(--muted)" }, children: [
         entry.durationMs,
         "ms"
       ] }) : null
     ] }),
-    isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "tool-card__body tool-card__body--running", children: "执行中..." }) : null,
-    !isRunning && entry.resultPreview ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "tool-card__body", children: entry.resultPreview }) : null,
+    isRunning ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-card__body tool-card__body--running", children: "执行中..." }) : null,
+    !isRunning && entry.resultPreview ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-card__body", children: entry.resultPreview }) : null,
     !isRunning && entry.outputText ? /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { className: "tool-card__output", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("summary", { children: [
-        "查看输出",
-        entry.outputTruncated ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tool-card__truncated-badge", children: "已截断" }) : null
+        "OUT",
+        entry.outputTruncated ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tool-card__truncated-badge", style: { marginLeft: "8px", opacity: 0.6 }, children: "TRUNCATED" }) : null
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: entry.outputText })
-    ] }) : null,
-    isFailed && entry.errorCode ? /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "tool-card__error-code", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tool-card__error-label", children: entry.errorCode }),
-      entry.retryHint ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "tool-card__retry-hint", children: entry.retryHint }) : null
-    ] }) : null,
-    isFailed && !entry.errorCode && entry.retryHint ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "tool-card__hint", children: entry.retryHint }) : null
+    ] }) : null
   ] });
 }
 const MessageTimeline = reactExports.forwardRef(
   function MessageTimeline2({ messages, timeline }, ref) {
-    if (messages.length === 0 && timeline.length === 0) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "message-list message-list--empty", ref, "aria-label": "消息流", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "message-empty-state", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-kicker", children: "Ready" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { children: "输入一个任务目标，开始第一轮执行。" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "这里会承接会话消息、运行状态和后续的差异产物。" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "message-empty-hint", children: [
-          "支持命令：",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "read: <path>" }),
-          " · ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "grep: <pattern> [path]" }),
-          " · ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "bash: <command>" })
-        ] })
+    if (messages.length === 0) {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "message-list message-list--empty", ref, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { margin: "auto", textAlign: "center", opacity: 0.5 }, children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { style: { fontSize: "1.2rem", fontWeight: 500, marginBottom: "8px" }, children: "ZAICowork Workbench" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { style: { fontSize: "13px" }, children: "Start by describing your task." })
       ] }) });
     }
     const combinedItems = [];
@@ -7601,84 +7483,122 @@ function PromptComposer({
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx("footer", { className: "composer", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__shell", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__header", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "prompt", className: "composer__label", children: "输入任务目标" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__meta", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: modeHints[workMode] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Ctrl/Cmd + Enter 发送" })
-      ] })
-    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "composer__header", children: /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "prompt", className: "composer__label", children: workMode === "code" ? "Code Editor" : "Chat" }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       "textarea",
       {
         id: "prompt",
+        className: "composer textarea",
         value: prompt,
         onChange: (event) => onPromptChange(event.target.value),
         onKeyDown: handleKeyDown,
-        placeholder: "read: src/index.ts \ngrep: TODO packages/ \nbash: Get-Location",
+        placeholder: "输入您的指令...",
         disabled
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__actions", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "button button--ghost", onClick: onCancel, disabled: !canCancel, children: "取消运行" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__meta", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: modeHints[workMode] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Ctrl + Enter 发送" })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__btn-group", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "button button--ghost", onClick: onCancel, disabled: !canCancel, children: "取消" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            className: "button button--primary",
+            onClick: onSubmit,
+            disabled: !prompt.trim() || disabled,
+            children: disabled ? "执行中..." : "开始执行"
+          }
+        )
+      ] })
+    ] })
+  ] }) });
+}
+const primaryActivities = [
+  { value: "chat", label: "Chat", icon: MessageSquare },
+  { value: "tasks", label: "Tasks", icon: CalendarDays },
+  { value: "resources", label: "Resources", icon: FolderOpen },
+  { value: "skills", label: "Skills", icon: WandSparkles }
+];
+function ActivityBar({ activeActivity, onSelectActivity }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "activity-bar", "aria-label": "Activity Bar", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "activity-bar__top", children: primaryActivities.map((item) => {
+      const Icon2 = item.icon;
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
-          className: "button button--primary",
-          onClick: onSubmit,
-          disabled: !prompt.trim() || disabled,
-          children: disabled ? "执行中..." : "开始执行"
-        }
-      )
-    ] })
-  ] }) });
+          className: `activity-bar__button ${activeActivity === item.value ? "is-active" : ""}`,
+          onClick: () => onSelectActivity(item.value),
+          "aria-label": item.label,
+          title: item.label,
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { className: "activity-bar__icon" })
+        },
+        item.value
+      );
+    }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "activity-bar__bottom", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      "button",
+      {
+        type: "button",
+        className: `activity-bar__button ${activeActivity === "settings" ? "is-active" : ""}`,
+        onClick: () => onSelectActivity("settings"),
+        "aria-label": "Settings",
+        title: "Settings",
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "activity-bar__icon" })
+      }
+    ) })
+  ] });
 }
 const moduleSidebarContent = {
   tasks: {
     kicker: "Delivery Console",
-    title: "任务编排",
+    title: "Tasks",
     sections: [
-      { title: "当前视图", items: ["执行队列", "审批节点", "回放历史"] },
-      { title: "优先事项", items: ["拆解阶段计划", "同步工具输出", "回填验收状态"] }
+      { title: "Current View", items: ["Execution Queue", "Approval Nodes", "Playback History"] },
+      { title: "Priorities", items: ["Phase Planning", "Tool Output Sync", "Acceptance Status"] }
     ]
   },
   resources: {
     kicker: "Knowledge Surface",
-    title: "资源聚合",
+    title: "Resources",
     sections: [
-      { title: "内容类型", items: ["仓库文档", "运行产物", "外部链接"] },
-      { title: "下一步", items: ["增加搜索入口", "引入过滤器", "展示最近访问"] }
+      { title: "Content Types", items: ["Repository Docs", "Execution Artifacts", "External Links"] },
+      { title: "Next Steps", items: ["Search Entry", "Filters", "Recent Access"] }
     ]
   },
   skills: {
     kicker: "Agent Toolkit",
-    title: "技能与提示",
+    title: "Skills & Prompts",
     sections: [
-      { title: "能力域", items: ["代码生成", "任务规划", "文档生成"] },
-      { title: "配置项", items: ["提示模板", "运行约束", "快捷动作"] }
+      { title: "Capability Domains", items: ["Code Generation", "Task Planning", "Doc Creation"] },
+      { title: "Configurations", items: ["Prompt Templates", "Run Constraints", "Shortcuts"] }
     ]
   },
   settings: {
     kicker: "System Preferences",
-    title: "工作台设置",
+    title: "Settings",
     sections: [
-      { title: "界面层", items: ["主题令牌", "布局密度", "动画开关"] },
-      { title: "运行层", items: ["默认模型", "审批策略", "日志级别"] }
+      { title: "Interface", items: ["Theme Tokens", "Density", "Animations"] },
+      { title: "Runtime", items: ["Default Model", "Approval Policy", "Log Level"] }
     ]
   }
 };
-function AppSidebar({
-  activeView,
+function PrimarySidebar({
+  activeActivity,
   sessions,
   activeSessionId,
   onSelectSession,
-  onCreateSession
+  onCreateSession,
+  width
 }) {
   const [search, setSearch] = reactExports.useState("");
   reactExports.useEffect(() => {
     setSearch("");
-  }, [activeView]);
+  }, [activeActivity]);
   const filteredSessions = reactExports.useMemo(() => {
     const normalized = search.trim().toLowerCase();
     if (!normalized) {
@@ -7688,101 +7608,171 @@ function AppSidebar({
       (session) => session.title.toLowerCase().includes(normalized) || session.summary.toLowerCase().includes(normalized)
     );
   }, [search, sessions]);
-  if (activeView !== "chat") {
-    const content = moduleSidebarContent[activeView];
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "workspace-sidebar", "aria-label": "模块导航", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-sidebar__header", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-kicker", children: content.kicker }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "workspace-sidebar__title", children: content.title })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", className: "sidebar-action sidebar-action--ghost", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Sparkles, { className: "sidebar-action__icon" }),
-          "规划"
-        ] })
-      ] }),
-      content.sections.map((section) => /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "workspace-sidebar__group", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "workspace-sidebar__group-label", children: section.title }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "workspace-sidebar__ghost-list", children: section.items.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "workspace-sidebar__ghost-item", children: item }, item)) })
-      ] }, section.title)),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sidebar-context-card sidebar-context-card--stacked", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "sidebar-context-card__eyebrow", children: "工作区映射" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "sidebar-context-list", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(FolderTree, { className: "sidebar-context-list__icon" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "apps/web" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Workflow, { className: "sidebar-context-list__icon" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "services/agent-dotnet" })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(PlugZap, { className: "sidebar-context-list__icon" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "packages/shared-protocol" })
-          ] })
-        ] })
-      ] })
+  if (activeActivity !== "chat") {
+    const content = moduleSidebarContent[activeActivity];
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "primary-sidebar", "aria-label": "Module Navigation", style: { width }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "primary-sidebar__header", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-kicker", children: content.kicker }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "primary-sidebar__title", children: content.title })
+      ] }) }),
+      content.sections.map((section) => /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "primary-sidebar__group", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "primary-sidebar__group-label", children: section.title }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "primary-sidebar__list", children: section.items.map((item) => /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "primary-sidebar__item", children: item }, item)) })
+      ] }, section.title))
     ] });
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "workspace-sidebar", "aria-label": "会话侧栏", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-sidebar__header workspace-sidebar__header--chat", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-kicker", children: "Workspace" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "workspace-sidebar__title", children: "会话" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("button", { type: "button", className: "sidebar-action", onClick: onCreateSession, children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "sidebar-action__icon" }),
-        "新建"
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "workspace-sidebar__search", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { className: "workspace-sidebar__search-icon" }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "primary-sidebar", "aria-label": "Chat Sessions", style: { width }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("header", { className: "primary-sidebar__header", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "primary-sidebar__title-row", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "primary-sidebar__title", children: "SESSIONS" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "input",
-        {
-          type: "search",
-          value: search,
-          onChange: (event) => setSearch(event.target.value),
-          placeholder: "搜索会话或摘要"
-        }
-      )
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-sidebar__session-list", children: [
-      filteredSessions.map((session) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "button",
         {
           type: "button",
-          className: `workspace-sidebar__session-item ${activeSessionId === session.id ? "is-active" : ""}`,
+          className: "sidebar-action-icon",
+          onClick: onCreateSession,
+          title: "New Session",
+          style: { opacity: 0.6, background: "transparent", border: "none", cursor: "pointer", padding: "4px", display: "flex" },
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { size: 14 })
+        }
+      )
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "primary-sidebar__search-container", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "primary-sidebar__search", style: { display: "flex", alignItems: "center", background: "var(--background-elevated)", border: "1px solid var(--border)", borderRadius: "2px", padding: "2px 8px" }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Search, { size: 12, style: { opacity: 0.5, marginRight: "6px" } }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "input",
+        {
+          type: "text",
+          style: { fontSize: "11px", background: "transparent", border: "none", color: "var(--foreground)", outline: "none", width: "100%", padding: "2px 0" },
+          placeholder: "Filter sessions...",
+          value: search,
+          onChange: (event) => setSearch(event.target.value)
+        }
+      )
+    ] }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "primary-sidebar__session-list", style: { flex: 1, overflowY: "auto" }, children: [
+      filteredSessions.map((session) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        "div",
+        {
+          className: `session-item ${session.id === activeSessionId ? "is-active" : ""}`,
           onClick: () => onSelectSession(session.id),
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-sidebar__session-title-row", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "workspace-sidebar__session-title", children: session.title }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "workspace-sidebar__session-time", children: session.updatedAt })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "workspace-sidebar__session-summary", children: session.summary })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "session-item__icon", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FolderTree, { size: 14 }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "session-item__info", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "session-item__title", children: session.title }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "session-item__meta", children: session.updatedAt })
+            ] })
           ]
         },
         session.id
       )),
-      filteredSessions.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "workspace-sidebar__empty", children: "没有匹配的会话结果。" }) : null
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sidebar-context-card", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "sidebar-context-card__eyebrow", children: "当前工作区" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "sidebar-context-list", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(FolderTree, { className: "sidebar-context-list__icon" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "apps/web" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Workflow, { className: "sidebar-context-list__icon" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "services/agent-dotnet" })
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(PlugZap, { className: "sidebar-context-list__icon" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "packages/shared-protocol" })
-        ] })
-      ] })
+      filteredSessions.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "primary-sidebar__empty", style: { padding: "20px", opacity: 0.5, fontSize: "12px", textAlign: "center" }, children: "No matching sessions." }) : null
     ] })
+  ] });
+}
+const tabs$1 = [
+  { value: "plan", label: "PLAN", icon: ListTodo },
+  { value: "logs", label: "OUTPUT", icon: Logs },
+  { value: "events", label: "TIMELINE", icon: Activity }
+];
+function BottomPanel({
+  activeTab,
+  onSelectTab,
+  onClose,
+  height,
+  planSteps,
+  logs,
+  events
+}) {
+  const renderContent = () => {
+    switch (activeTab) {
+      case "plan":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bottom-panel__content-scroll", children: /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "plan-list", children: planSteps.map((step, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: step }, i)) }) });
+      case "logs":
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bottom-panel__content-scroll bottom-panel__logs", children: [
+          logs.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-empty", children: "No output yet..." }) : null,
+          logs.map((log) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `log-entry log-entry--${log.level}`, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "log-entry__time", children: [
+              "[",
+              new Date(log.timestamp).toLocaleTimeString(),
+              "]"
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "log-entry__message", children: log.message })
+          ] }, log.id))
+        ] });
+      case "events":
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bottom-panel__content-scroll", children: [
+          events.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-empty", children: "No events recorded." }) : null,
+          events.map((event) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "event-entry", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "event-entry__type", children: event.type.toUpperCase() }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "event-entry__summary", children: event.summary })
+          ] }, event.id))
+        ] });
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("section", { className: "bottom-panel", style: { height }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "bottom-panel__header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bottom-panel__tabs", children: tabs$1.map((tab) => {
+        const Icon2 = tab.icon;
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          "button",
+          {
+            className: `bottom-panel__tab-btn ${activeTab === tab.value ? "is-active" : ""}`,
+            onClick: () => onSelectTab(tab.value),
+            children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { className: "bottom-panel__tab-icon" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: tab.label })
+            ]
+          },
+          tab.value
+        );
+      }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bottom-panel__actions", children: /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "bottom-panel__close-btn", onClick: onClose, title: "Close Panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 16 }) }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bottom-panel__body", children: renderContent() })
+  ] });
+}
+const tabs = [
+  { value: "details", label: "Details", icon: Info },
+  { value: "artifacts", label: "Artifacts", icon: Package }
+];
+function AuxiliarySidebar({
+  activeTab,
+  onSelectTab,
+  onClose,
+  width
+}) {
+  const renderContent = () => {
+    switch (activeTab) {
+      case "details":
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auxiliary-sidebar__group", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "section-label", children: "Run Parameters" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "auxiliary-sidebar__list", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auxiliary-sidebar__item", children: "Model: GPT-5.4" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auxiliary-sidebar__item", children: "Context: Local Repo" })
+          ] })
+        ] });
+      case "artifacts":
+        return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auxiliary-sidebar__empty", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No artifacts produced in this run." }) });
+    }
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "auxiliary-sidebar", "aria-label": "Auxiliary Sidebar", style: { width }, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "auxiliary-sidebar__header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auxiliary-sidebar__tabs", children: tabs.map((tab) => {
+        const Icon2 = tab.icon;
+        return /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            className: `auxiliary-sidebar__tab-btn ${activeTab === tab.value ? "is-active" : ""}`,
+            onClick: () => onSelectTab(tab.value),
+            title: tab.label,
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { size: 16 })
+          },
+          tab.value
+        );
+      }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "auxiliary-sidebar__close-btn", onClick: onClose, title: "Close Panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 16 }) })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "auxiliary-sidebar__body", children: renderContent() })
   ] });
 }
 const moduleContent = {
@@ -7886,195 +7876,181 @@ function ModulePage({ view }) {
     ] })
   ] });
 }
-const primaryItems = [
-  { value: "chat", label: "会话", icon: MessageSquare },
-  { value: "tasks", label: "任务", icon: CalendarDays },
-  { value: "resources", label: "资源", icon: FolderOpen },
-  { value: "skills", label: "技能", icon: WandSparkles }
-];
-function NavRail({ activeView, onSelectView }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("aside", { className: "nav-rail", "aria-label": "主导航", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nav-rail__brand", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nav-rail__brand-mark", children: "AI" }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nav-rail__items", children: primaryItems.map((item) => {
-      const Icon2 = item.icon;
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          type: "button",
-          className: `nav-rail__button ${activeView === item.value ? "is-active" : ""}`,
-          onClick: () => onSelectView(item.value),
-          "aria-label": item.label,
-          title: item.label,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { className: "nav-rail__icon" })
-        },
-        item.value
-      );
-    }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nav-rail__bottom", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "button",
-        {
-          type: "button",
-          className: `nav-rail__button ${activeView === "settings" ? "is-active" : ""}`,
-          onClick: () => onSelectView("settings"),
-          "aria-label": "设置",
-          title: "设置",
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "nav-rail__icon" })
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "nav-rail__version", children: "web" })
-    ] })
-  ] });
-}
-const MIN_PANEL_WIDTH = 300;
-const MAX_PANEL_WIDTH = 460;
-const RAIL_WIDTH = 52;
-const tabs = [
-  { value: "plan", label: "计划", icon: ListTodo },
-  { value: "logs", label: "日志", icon: Logs },
-  { value: "events", label: "事件", icon: Activity }
-];
-const clampPanelWidth = (width) => Math.min(MAX_PANEL_WIDTH, Math.max(MIN_PANEL_WIDTH, width));
-function RightPanel({
-  activeView,
-  activeTab,
-  description,
-  events,
-  isOpen,
-  logs,
-  onSelectTab,
-  onToggle,
-  onWidthChange,
-  planSteps,
-  runState,
-  statusText,
-  title,
-  width
-}) {
-  const draggingRef = reactExports.useRef(false);
-  const startXRef = reactExports.useRef(0);
-  const startWidthRef = reactExports.useRef(width);
-  const [isDragging, setIsDragging] = reactExports.useState(false);
+function useWorkbenchLayout() {
+  const [activeActivity, setActiveActivity] = reactExports.useState("chat");
+  const [leftSidebarWidth, setLeftSidebarWidth] = reactExports.useState(260);
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = reactExports.useState(true);
+  const [bottomPanelHeight, setBottomPanelHeight] = reactExports.useState(240);
+  const [isBottomPanelOpen, setIsBottomPanelOpen] = reactExports.useState(true);
+  const [activeBottomTab, setActiveBottomTab] = reactExports.useState("logs");
+  const [auxiliaryPanelWidth, setAuxiliaryPanelWidth] = reactExports.useState(300);
+  const [isAuxiliaryPanelOpen, setIsAuxiliaryPanelOpen] = reactExports.useState(false);
+  const [activeAuxiliaryTab, setActiveAuxiliaryTab] = reactExports.useState("details");
+  const [isResizingSidebar, setIsResizingSidebar] = reactExports.useState(false);
+  const [isResizingBottom, setIsResizingBottom] = reactExports.useState(false);
   reactExports.useEffect(() => {
-    if (!isDragging) {
-      return;
-    }
-    const handleMouseMove = (event) => {
-      if (!draggingRef.current) {
-        return;
+    const handleMouseMove = (e) => {
+      if (isResizingSidebar) {
+        setLeftSidebarWidth(Math.max(170, Math.min(600, e.clientX - 48)));
+      } else if (isResizingBottom) {
+        setBottomPanelHeight(Math.max(100, Math.min(window.innerHeight - 200, window.innerHeight - e.clientY)));
       }
-      const delta = startXRef.current - event.clientX;
-      onWidthChange(clampPanelWidth(startWidthRef.current + delta));
     };
     const handleMouseUp = () => {
-      draggingRef.current = false;
-      setIsDragging(false);
+      setIsResizingSidebar(false);
+      setIsResizingBottom(false);
     };
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
+    if (isResizingSidebar || isResizingBottom) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+      document.body.style.cursor = isResizingSidebar ? "col-resize" : "row-resize";
+    } else {
+      document.body.style.cursor = "default";
+    }
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, onWidthChange]);
-  const tabLabel = reactExports.useMemo(
-    () => tabs.find((tab) => tab.value === activeTab)?.label ?? "计划",
-    [activeTab]
-  );
-  const startResize = (event) => {
-    if (!isOpen) {
-      return;
-    }
-    event.preventDefault();
-    draggingRef.current = true;
-    startXRef.current = event.clientX;
-    startWidthRef.current = width;
-    setIsDragging(true);
+  }, [isResizingSidebar, isResizingBottom]);
+  return {
+    activeActivity,
+    leftSidebarWidth,
+    isLeftSidebarOpen,
+    bottomPanelHeight,
+    isBottomPanelOpen,
+    activeBottomTab,
+    auxiliaryPanelWidth,
+    isAuxiliaryPanelOpen,
+    activeAuxiliaryTab,
+    isResizingSidebar,
+    isResizingBottom,
+    setActiveActivity,
+    setLeftSidebarWidth,
+    setIsLeftSidebarOpen,
+    setBottomPanelHeight,
+    setIsBottomPanelOpen,
+    setActiveBottomTab,
+    setAuxiliaryPanelWidth,
+    setIsAuxiliaryPanelOpen,
+    setActiveAuxiliaryTab,
+    startResizeSidebar: () => setIsResizingSidebar(true),
+    startResizeBottom: () => setIsResizingBottom(true)
   };
-  const renderPlan = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "right-panel__stack", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "plan-list", children: planSteps.map((step) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: step }, step)) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "inspector-note", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "inspector-note__label", children: "观察点" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: activeView === "chat" ? "首轮重点是把工作台骨架稳定下来，再逐步承接更多执行产物。" : "当前模块先交付可导航、可扩展的页面骨架，功能细化会在下一轮补齐。" })
-    ] })
-  ] });
-  const renderLogs = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "right-panel__stack", children: [
-    logs.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-empty", children: "等待本地 bridge 日志..." }) : null,
-    logs.map((log) => /* @__PURE__ */ jsxRuntimeExports.jsxs("article", { className: `panel-card panel-card--log panel-card--${log.level}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-card__eyebrow", children: new Date(log.timestamp).toLocaleTimeString() }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-card__content", children: log.message })
-    ] }, log.id))
-  ] });
-  const renderEvents = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "right-panel__stack", children: [
-    events.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-empty", children: "尚未收到事件。" }) : null,
-    events.map((event) => /* @__PURE__ */ jsxRuntimeExports.jsxs("article", { className: "panel-card", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-card__eyebrow", children: event.type }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-card__content", children: event.summary })
-    ] }, event.id))
-  ] });
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-    "aside",
-    {
-      className: `right-panel-shell ${isOpen ? "is-open" : "is-collapsed"}`,
-      style: { width: isOpen ? width : RAIL_WIDTH },
-      "aria-label": "右侧检查面板",
-      children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `right-panel__resizer ${isOpen ? "" : "is-hidden"}`, onMouseDown: startResize }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "right-panel__rail", children: [
-          tabs.map((tab) => {
-            const Icon2 = tab.icon;
-            return /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "button",
-              {
-                type: "button",
-                className: `right-panel__rail-button ${activeTab === tab.value ? "is-active" : ""}`,
-                onClick: () => {
-                  onSelectTab(tab.value);
-                  if (!isOpen) {
-                    onToggle(true);
-                  }
-                },
-                "aria-label": tab.label,
-                title: tab.label,
-                children: /* @__PURE__ */ jsxRuntimeExports.jsx(Icon2, { className: "right-panel__rail-icon" })
-              },
-              tab.value
-            );
-          }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "right-panel__rail-spacer" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
-            "button",
-            {
-              type: "button",
-              className: "right-panel__rail-button",
-              onClick: () => onToggle(!isOpen),
-              "aria-label": isOpen ? "折叠检查面板" : "展开检查面板",
-              title: isOpen ? "折叠" : "展开",
-              children: isOpen ? /* @__PURE__ */ jsxRuntimeExports.jsx(PanelRightClose, { className: "right-panel__rail-icon" }) : /* @__PURE__ */ jsxRuntimeExports.jsx(PanelRightOpen, { className: "right-panel__rail-icon" })
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "right-panel__content", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("header", { className: "right-panel__header", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "section-kicker", children: [
-                "Inspector / ",
-                tabLabel
-              ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "right-panel__title", children: title }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "right-panel__description", children: description })
-            ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `status-pill status-pill--${runState}`, children: statusText })
-          ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "right-panel__body", children: [
-            activeTab === "plan" ? renderPlan() : null,
-            activeTab === "logs" ? renderLogs() : null,
-            activeTab === "events" ? renderEvents() : null
-          ] })
-        ] })
-      ]
-    }
+}
+const initialSessionRecords = [
+  {
+    id: "s-1",
+    title: "重构登录流程",
+    updatedAt: "2 分钟前",
+    summary: "请把用户服务拆分成 domain/application/infrastructure 三层，并给出迁移步骤。",
+    draft: "请把用户服务拆分成 domain/application/infrastructure 三层，并给出迁移步骤。",
+    toolCalls: /* @__PURE__ */ new Map(),
+    timeline: [],
+    messages: [
+      {
+        id: "m-1",
+        role: "user",
+        content: "请把用户服务拆分成 domain/application/infrastructure 三层，并给出迁移步骤。"
+      },
+      {
+        id: "m-2",
+        role: "assistant",
+        content: "收到。我会先输出迁移计划，再逐步改动文件并在每一步给出差异说明，最后执行 lint 与构建验证。"
+      }
+    ]
+  },
+  {
+    id: "s-2",
+    title: "实现 MCP 工具桥接",
+    updatedAt: "15 分钟前",
+    summary: "为前端增加工具调用状态和事件透出，并保持 SSE 协议清晰可调试。",
+    draft: "",
+    toolCalls: /* @__PURE__ */ new Map(),
+    timeline: [],
+    messages: [
+      {
+        id: "m-3",
+        role: "user",
+        content: "请为前端补齐工具调用开始/完成状态，并在右侧展示日志与流事件。"
+      },
+      {
+        id: "m-4",
+        role: "assistant",
+        content: "可以，建议先把事件、日志和计划拆成独立面板，再把桥接状态接进去。"
+      }
+    ]
+  },
+  {
+    id: "s-3",
+    title: "修复 CI lint 失败",
+    updatedAt: "昨天",
+    summary: "定位 lint 失败根因，优先修复严格类型和无用变量问题。",
+    draft: "",
+    toolCalls: /* @__PURE__ */ new Map(),
+    timeline: [],
+    messages: [
+      {
+        id: "m-5",
+        role: "user",
+        content: "请先分析 lint 错误来源，再给出最小改动的修复方案。"
+      },
+      {
+        id: "m-6",
+        role: "assistant",
+        content: "会先确认报错集中在哪些文件，再避免顺手修改不相关代码。"
+      }
+    ]
+  }
+];
+function useSessionManager() {
+  const [sessionRecords, setSessionRecords] = reactExports.useState(initialSessionRecords);
+  const [activeSessionId, setActiveSessionId] = reactExports.useState(initialSessionRecords[0]?.id ?? "");
+  const activeSession = reactExports.useMemo(
+    () => sessionRecords.find((s) => s.id === activeSessionId) ?? sessionRecords[0] ?? null,
+    [activeSessionId, sessionRecords]
   );
+  const prompt = reactExports.useMemo(() => activeSession?.draft ?? "", [activeSession]);
+  const messages = reactExports.useMemo(() => activeSession?.messages ?? [], [activeSession]);
+  const timeline = reactExports.useMemo(() => activeSession?.timeline ?? [], [activeSession]);
+  const updateSessionRecord = (sessionId, updater) => {
+    setSessionRecords(
+      (current) => current.map((s) => s.id === sessionId ? updater(s) : s)
+    );
+  };
+  const createSession = () => {
+    const sessionId = crypto.randomUUID();
+    setSessionRecords((current) => [
+      {
+        id: sessionId,
+        title: "新会话",
+        updatedAt: "刚刚",
+        summary: "等待任务目标",
+        draft: "",
+        messages: [],
+        toolCalls: /* @__PURE__ */ new Map(),
+        timeline: []
+      },
+      ...current
+    ]);
+    setActiveSessionId(sessionId);
+    return sessionId;
+  };
+  const handlePromptChange = (value) => {
+    if (!activeSession) return;
+    updateSessionRecord(activeSession.id, (s) => ({ ...s, draft: value }));
+  };
+  return {
+    sessionRecords,
+    activeSessionId,
+    activeSession,
+    prompt,
+    messages,
+    timeline,
+    setActiveSessionId,
+    updateSessionRecord,
+    createSession,
+    handlePromptChange
+  };
 }
 const createLogEntry = (message, level = "info") => ({
   id: crypto.randomUUID(),
@@ -8275,106 +8251,12 @@ function startAgentRun(options) {
   }
   return startAgentRunWeb(options);
 }
-const initialSessionRecords = [
-  {
-    id: "s-1",
-    title: "重构登录流程",
-    updatedAt: "2 分钟前",
-    summary: "请把用户服务拆分成 domain/application/infrastructure 三层，并给出迁移步骤。",
-    draft: "请把用户服务拆分成 domain/application/infrastructure 三层，并给出迁移步骤。",
-    toolCalls: /* @__PURE__ */ new Map(),
-    timeline: [],
-    messages: [
-      {
-        id: "m-1",
-        role: "user",
-        content: "请把用户服务拆分成 domain/application/infrastructure 三层，并给出迁移步骤。"
-      },
-      {
-        id: "m-2",
-        role: "assistant",
-        content: "收到。我会先输出迁移计划，再逐步改动文件并在每一步给出差异说明，最后执行 lint 与构建验证。"
-      }
-    ]
-  },
-  {
-    id: "s-2",
-    title: "实现 MCP 工具桥接",
-    updatedAt: "15 分钟前",
-    summary: "为前端增加工具调用状态和事件透出，并保持 SSE 协议清晰可调试。",
-    draft: "",
-    toolCalls: /* @__PURE__ */ new Map(),
-    timeline: [],
-    messages: [
-      {
-        id: "m-3",
-        role: "user",
-        content: "请为前端补齐工具调用开始/完成状态，并在右侧展示日志与流事件。"
-      },
-      {
-        id: "m-4",
-        role: "assistant",
-        content: "可以，建议先把事件、日志和计划拆成独立面板，再把桥接状态接进去。"
-      }
-    ]
-  },
-  {
-    id: "s-3",
-    title: "修复 CI lint 失败",
-    updatedAt: "昨天",
-    summary: "定位 lint 失败根因，优先修复严格类型和无用变量问题。",
-    draft: "",
-    toolCalls: /* @__PURE__ */ new Map(),
-    timeline: [],
-    messages: [
-      {
-        id: "m-5",
-        role: "user",
-        content: "请先分析 lint 错误来源，再给出最小改动的修复方案。"
-      },
-      {
-        id: "m-6",
-        role: "assistant",
-        content: "会先确认报错集中在哪些文件，再避免顺手修改不相关代码。"
-      }
-    ]
-  }
-];
 const statusLabel = {
   idle: "空闲",
   running: "运行中",
   completed: "已完成",
   failed: "失败",
   canceled: "已取消"
-};
-const planStepsByView = {
-  chat: ["分析代码与依赖关系", "提出最小修改方案", "应用补丁并运行验证", "输出变更摘要与后续建议"],
-  tasks: ["定义阶段与负责人", "映射审批节点", "接入运行回放", "补齐结果验收"],
-  resources: ["建立资源分组", "设计过滤与检索", "加入最近访问", "承接详情预览"],
-  skills: ["梳理能力分区", "整理模板清单", "加入启用状态", "预留复制与应用动作"],
-  settings: ["建立设置分组", "统一 token 与主题", "补齐运行策略项", "加入保存与回滚反馈"]
-};
-const inspectorCopy = {
-  chat: {
-    title: "Execution Console",
-    description: "当前会话的计划、日志和流事件会在这里聚合展示。"
-  },
-  tasks: {
-    title: "Task Inspector",
-    description: "用于跟踪阶段计划、审批节点和回放结构。"
-  },
-  resources: {
-    title: "Resource Inspector",
-    description: "用于整理资源分组、检索入口与详情视图。"
-  },
-  skills: {
-    title: "Skill Inspector",
-    description: "用于承接技能模板、约束和快捷提示的配置。"
-  },
-  settings: {
-    title: "Settings Inspector",
-    description: "用于统一主题、布局密度和运行策略相关选项。"
-  }
 };
 const eventSummary = (event) => {
   switch (event.type) {
@@ -8394,21 +8276,12 @@ const eventSummary = (event) => {
       return `${event.payload.toolName} ${event.payload.status}: ${event.payload.resultPreview} (${event.payload.durationMs}ms)`;
   }
 };
-const summarizePrompt = (prompt) => {
+function summarizePrompt(prompt) {
   const normalized = prompt.replace(/\s+/g, " ").trim();
-  if (!normalized) {
-    return "新会话";
-  }
+  if (!normalized) return "新会话";
   return normalized.length > 22 ? `${normalized.slice(0, 22)}...` : normalized;
-};
-function App() {
-  const [sessionRecords, setSessionRecords] = reactExports.useState(initialSessionRecords);
-  const [activeSessionId, setActiveSessionId] = reactExports.useState(initialSessionRecords[0]?.id ?? "");
-  const [activeView, setActiveView] = reactExports.useState("chat");
-  const [workMode, setWorkMode] = reactExports.useState("code");
-  const [rightPanelOpen, setRightPanelOpen] = reactExports.useState(true);
-  const [rightPanelTab, setRightPanelTab] = reactExports.useState("plan");
-  const [rightPanelWidth, setRightPanelWidth] = reactExports.useState(360);
+}
+function useAgentRun(updateSessionRecord) {
   const [events, setEvents] = reactExports.useState([]);
   const [logs, setLogs] = reactExports.useState([]);
   const [runState, setRunState] = reactExports.useState("idle");
@@ -8418,14 +8291,7 @@ function App() {
   const [bridgeState, setBridgeState] = reactExports.useState(null);
   const controllerRef = reactExports.useRef(null);
   const runSessionMapRef = reactExports.useRef(/* @__PURE__ */ new Map());
-  const messageListRef = reactExports.useRef(null);
-  const activeSession = reactExports.useMemo(
-    () => sessionRecords.find((session) => session.id === activeSessionId) ?? sessionRecords[0] ?? null,
-    [activeSessionId, sessionRecords]
-  );
-  const prompt = reactExports.useMemo(() => activeSession?.draft ?? "", [activeSession]);
-  const messages = reactExports.useMemo(() => activeSession?.messages ?? [], [activeSession]);
-  const timeline = reactExports.useMemo(() => activeSession?.timeline ?? [], [activeSession]);
+  const pendingRunRef = reactExports.useRef(null);
   const inspectorEvents = reactExports.useMemo(
     () => events.map((event, index) => ({
       id: `${event.runId}-${event.timestamp}-${event.type}-${index}`,
@@ -8434,16 +8300,6 @@ function App() {
     })),
     [events]
   );
-  reactExports.useEffect(() => {
-    if (activeView !== "chat") {
-      return;
-    }
-    const messageList = messageListRef.current;
-    if (!messageList) {
-      return;
-    }
-    messageList.scrollTop = messageList.scrollHeight;
-  }, [activeView, messages, timeline]);
   reactExports.useEffect(
     () => () => {
       void controllerRef.current?.cancel().catch(() => void 0);
@@ -8456,19 +8312,12 @@ function App() {
       unsubscribe?.();
     };
   }, []);
-  const updateSessionRecord = (sessionId, updater) => {
-    setSessionRecords(
-      (currentSessions) => currentSessions.map((session) => session.id === sessionId ? updater(session) : session)
-    );
-  };
   const appendLog = (entry) => {
-    setLogs((currentLogs) => [entry, ...currentLogs].slice(0, 24));
+    setLogs((current) => [entry, ...current].slice(0, 24));
   };
   const appendAssistantText = (runId, text) => {
     const sessionId = runSessionMapRef.current.get(runId);
-    if (!sessionId) {
-      return;
-    }
+    if (!sessionId) return;
     updateSessionRecord(sessionId, (session) => ({
       ...session,
       messages: session.messages.map(
@@ -8478,9 +8327,7 @@ function App() {
   };
   const appendAssistantFallback = (runId, text) => {
     const sessionId = runSessionMapRef.current.get(runId);
-    if (!sessionId) {
-      return;
-    }
+    if (!sessionId) return;
     updateSessionRecord(sessionId, (session) => {
       const existingMessage = session.messages.find((message) => message.runId === runId);
       if (existingMessage) {
@@ -8506,7 +8353,7 @@ function App() {
     });
   };
   const handleStreamEvent = (event) => {
-    setEvents((currentEvents) => [event, ...currentEvents].slice(0, 24));
+    setEvents((current) => [event, ...current].slice(0, 24));
     switch (event.type) {
       case "run_started":
         setRunState("running");
@@ -8574,50 +8421,7 @@ function App() {
       }
     }
   };
-  const handlePromptChange = (value) => {
-    if (!activeSession) {
-      return;
-    }
-    updateSessionRecord(activeSession.id, (session) => ({
-      ...session,
-      draft: value
-    }));
-  };
-  const handleSelectView = (view) => {
-    setActiveView(view);
-    if (view === "chat" && !activeSessionId && sessionRecords[0]) {
-      setActiveSessionId(sessionRecords[0].id);
-    }
-  };
-  const handleCreateSession = () => {
-    const sessionId = crypto.randomUUID();
-    setSessionRecords((currentSessions) => [
-      {
-        id: sessionId,
-        title: "新会话",
-        updatedAt: "刚刚",
-        summary: "等待任务目标",
-        draft: "",
-        messages: [],
-        toolCalls: /* @__PURE__ */ new Map(),
-        timeline: []
-      },
-      ...currentSessions
-    ]);
-    setActiveSessionId(sessionId);
-    setActiveView("chat");
-    setErrorMessage(null);
-  };
-  const handleSelectSession = (sessionId) => {
-    setActiveSessionId(sessionId);
-    setActiveView("chat");
-    setErrorMessage(null);
-  };
-  const executeRun = (trimmedPrompt) => {
-    if (!activeSession) {
-      return;
-    }
-    const sessionId = activeSession.id;
+  const executeRun = (trimmedPrompt, sessionId) => {
     const controller = startAgentRun({
       prompt: trimmedPrompt,
       model: "gpt-5.4",
@@ -8666,33 +8470,32 @@ function App() {
         controllerRef.current = null;
       }
       runSessionMapRef.current.delete(controller.runId);
-      setActiveRunId((currentRunId) => currentRunId === controller.runId ? null : currentRunId);
+      setActiveRunId((current) => current === controller.runId ? null : current);
     });
   };
-  const handleSubmit = () => {
-    if (!activeSession) {
-      return;
-    }
+  const submitPrompt = (prompt, sessionId) => {
+    if (!sessionId) return;
     const trimmedPrompt = prompt.trim();
-    if (!trimmedPrompt || runState === "running") {
-      return;
-    }
+    if (!trimmedPrompt || runState === "running") return;
     const bashLines = trimmedPrompt.split("\n").map((l2) => l2.trim()).filter((l2) => /^bash:/i.test(l2)).map((l2) => l2.replace(/^bash:\s*/i, ""));
     if (bashLines.length > 0) {
+      pendingRunRef.current = { prompt: trimmedPrompt, sessionId };
       setBashConfirmCommands(bashLines);
       return;
     }
-    executeRun(trimmedPrompt);
+    executeRun(trimmedPrompt, sessionId);
   };
   const handleBashConfirm = () => {
     setBashConfirmCommands(null);
-    const trimmedPrompt = prompt.trim();
-    if (trimmedPrompt) {
-      executeRun(trimmedPrompt);
+    const pending = pendingRunRef.current;
+    pendingRunRef.current = null;
+    if (pending) {
+      executeRun(pending.prompt, pending.sessionId);
     }
   };
   const handleBashCancel = () => {
     setBashConfirmCommands(null);
+    pendingRunRef.current = null;
   };
   const handleCancel = () => {
     void controllerRef.current?.cancel().catch((error) => {
@@ -8700,77 +8503,160 @@ function App() {
       setErrorMessage(error.message);
     });
   };
-  const inspectorTitle = activeView === "chat" ? activeSession?.title ?? "新会话" : inspectorCopy[activeView].title;
-  const inspectorDescription = activeView === "chat" ? activeSession?.summary ?? inspectorCopy.chat.description : inspectorCopy[activeView].description;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "app-shell", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(NavRail, { activeView, onSelectView: handleSelectView }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      AppSidebar,
-      {
-        activeView,
-        sessions: sessionRecords,
-        activeSessionId,
-        onSelectSession: handleSelectSession,
-        onCreateSession: handleCreateSession
-      }
-    ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("main", { className: "main-stage", children: activeView === "chat" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        ChatHeader,
-        {
-          title: activeSession?.title ?? "新会话",
-          summary: activeSession?.summary ?? "输入任务目标，开始第一轮执行。",
-          runState,
-          statusText: statusLabel[runState],
-          workMode,
-          bridgeState,
-          onWorkModeChange: setWorkMode
-        }
-      ),
-      errorMessage ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "error-banner", children: errorMessage }) : null,
-      bashConfirmCommands ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bash-confirm-overlay", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bash-confirm-dialog", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "bash-confirm-dialog__title", children: "确认执行 Shell 命令" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "bash-confirm-dialog__desc", children: "以下命令将在本地 shell 中执行：" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "bash-confirm-dialog__list", children: bashConfirmCommands.map((cmd, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: cmd }) }, i)) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bash-confirm-dialog__actions", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "button button--ghost", onClick: handleBashCancel, children: "取消" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "button button--primary", onClick: handleBashConfirm, children: "确认执行" })
+  return {
+    events,
+    logs,
+    runState,
+    errorMessage,
+    activeRunId,
+    bashConfirmCommands,
+    bridgeState,
+    inspectorEvents,
+    submitPrompt,
+    handleBashConfirm,
+    handleBashCancel,
+    handleCancel,
+    clearError: () => setErrorMessage(null)
+  };
+}
+const WorkbenchContext = reactExports.createContext(null);
+const planStepsByView = {
+  chat: ["分析代码与依赖关系", "提出最小修改方案", "应用补丁并运行验证", "输出变更摘要与后续建议"],
+  tasks: ["定义阶段与负责人", "映射审批节点", "接入运行回放", "补齐结果验收"],
+  resources: ["建立资源分组", "设计过滤与检索", "加入最近访问", "承接详情预览"],
+  skills: ["梳理能力分区", "整理模板清单", "加入启用状态", "预留复制与应用动作"],
+  settings: ["建立设置分组", "统一 token 与主题", "补齐运行策略项", "加入保存与回滚反馈"]
+};
+function App() {
+  const layout = useWorkbenchLayout();
+  const sessions = useSessionManager();
+  const agentRun = useAgentRun(sessions.updateSessionRecord);
+  const [workMode, setWorkMode] = reactExports.useState("code");
+  const messageListRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    if (layout.activeActivity !== "chat") return;
+    const el2 = messageListRef.current;
+    if (el2) el2.scrollTop = el2.scrollHeight;
+  }, [layout.activeActivity, sessions.messages, sessions.timeline]);
+  const handleSelectActivity = (activity) => {
+    if (activity === layout.activeActivity) {
+      layout.setIsLeftSidebarOpen(!layout.isLeftSidebarOpen);
+    } else {
+      layout.setActiveActivity(activity);
+      layout.setIsLeftSidebarOpen(true);
+    }
+    if (activity === "chat" && !sessions.activeSessionId && sessions.sessionRecords[0]) {
+      sessions.setActiveSessionId(sessions.sessionRecords[0].id);
+    }
+  };
+  const handleCreateSession = () => {
+    sessions.createSession();
+    layout.setActiveActivity("chat");
+    layout.setIsLeftSidebarOpen(true);
+    agentRun.clearError();
+  };
+  const handleSelectSession = (sessionId) => {
+    sessions.setActiveSessionId(sessionId);
+    layout.setActiveActivity("chat");
+    agentRun.clearError();
+  };
+  const handleSubmit = () => {
+    agentRun.submitPrompt(sessions.prompt, sessions.activeSession?.id);
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(WorkbenchContext.Provider, { value: { layout, sessions, agentRun }, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workbench-shell", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(ActivityBar, { activeActivity: layout.activeActivity, onSelectActivity: handleSelectActivity }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("main", { className: "workbench-main", children: [
+      layout.isLeftSidebarOpen && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          PrimarySidebar,
+          {
+            activeActivity: layout.activeActivity,
+            sessions: sessions.sessionRecords,
+            activeSessionId: sessions.activeSessionId,
+            onSelectSession: handleSelectSession,
+            onCreateSession: handleCreateSession,
+            width: layout.leftSidebarWidth
+          }
+        ),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "div",
+          {
+            className: `sidebar-resizer ${layout.isResizingSidebar ? "is-active" : ""}`,
+            onMouseDown: layout.startResizeSidebar
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "workspace-center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("section", { className: "workspace-body", children: layout.activeActivity === "chat" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ChatHeader,
+            {
+              title: sessions.activeSession?.title ?? "New Session",
+              summary: sessions.activeSession?.summary ?? "Provide mission goals to start.",
+              runState: agentRun.runState,
+              statusText: statusLabel[agentRun.runState],
+              workMode,
+              bridgeState: agentRun.bridgeState,
+              onWorkModeChange: setWorkMode
+            }
+          ),
+          agentRun.errorMessage ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "error-banner", children: agentRun.errorMessage }) : null,
+          agentRun.bashConfirmCommands ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bash-confirm-overlay", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bash-confirm-dialog", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "bash-confirm-dialog__title", children: "Confirm Shell Execution" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "bash-confirm-dialog__desc", children: "The following commands will run locally:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "bash-confirm-dialog__list", children: agentRun.bashConfirmCommands.map((cmd, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: cmd }) }, i)) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bash-confirm-dialog__actions", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "button button--ghost", onClick: agentRun.handleBashCancel, children: "Cancel" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "button button--primary", onClick: agentRun.handleBashConfirm, children: "Execute" })
+            ] })
+          ] }) }) : null,
+          /* @__PURE__ */ jsxRuntimeExports.jsx(MessageTimeline, { ref: messageListRef, messages: sessions.messages, timeline: sessions.timeline }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            PromptComposer,
+            {
+              prompt: sessions.prompt,
+              workMode,
+              disabled: agentRun.runState === "running",
+              canCancel: agentRun.runState === "running" && !!agentRun.activeRunId,
+              onPromptChange: sessions.handlePromptChange,
+              onSubmit: handleSubmit,
+              onCancel: agentRun.handleCancel
+            }
+          )
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ModulePage, { view: layout.activeActivity }) }),
+        layout.isBottomPanelOpen && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              className: `bottom-resizer ${layout.isResizingBottom ? "is-active" : ""}`,
+              onMouseDown: layout.startResizeBottom
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            BottomPanel,
+            {
+              activeTab: layout.activeBottomTab,
+              onSelectTab: layout.setActiveBottomTab,
+              onClose: () => layout.setIsBottomPanelOpen(false),
+              height: layout.bottomPanelHeight,
+              planSteps: planStepsByView[layout.activeActivity],
+              logs: agentRun.logs,
+              events: agentRun.inspectorEvents
+            }
+          )
         ] })
-      ] }) }) : null,
-      /* @__PURE__ */ jsxRuntimeExports.jsx(MessageTimeline, { ref: messageListRef, messages, timeline }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        PromptComposer,
+      ] }),
+      layout.isAuxiliaryPanelOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        AuxiliarySidebar,
         {
-          prompt,
-          workMode,
-          disabled: runState === "running",
-          canCancel: runState === "running" && !!activeRunId,
-          onPromptChange: handlePromptChange,
-          onSubmit: handleSubmit,
-          onCancel: handleCancel
+          activeTab: layout.activeAuxiliaryTab,
+          onSelectTab: layout.setActiveAuxiliaryTab,
+          onClose: () => layout.setIsAuxiliaryPanelOpen(false),
+          width: layout.auxiliaryPanelWidth
         }
       )
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ModulePage, { view: activeView }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
-      RightPanel,
-      {
-        activeView,
-        activeTab: rightPanelTab,
-        description: inspectorDescription,
-        events: inspectorEvents,
-        isOpen: rightPanelOpen,
-        logs,
-        onSelectTab: setRightPanelTab,
-        onToggle: setRightPanelOpen,
-        onWidthChange: setRightPanelWidth,
-        planSteps: planStepsByView[activeView],
-        runState,
-        statusText: statusLabel[runState],
-        title: inspectorTitle,
-        width: rightPanelWidth
-      }
-    )
-  ] });
+    ] })
+  ] }) });
 }
 createRoot(document.getElementById("root")).render(
   /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(App, {}) })
