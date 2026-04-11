@@ -29,7 +29,7 @@
 
 ## Phase 3 - Electron Shell Integration
 
-- Status: not-started
+- Status: in-progress
 - Goal: 接入 Electron main/preload，托管 agent 生命周期
 - Exit Criteria:
   - renderer -> main -> agent 通道稳定

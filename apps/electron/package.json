@@ -1,0 +1,27 @@
+{
+  "name": "@aiide/electron",
+  "private": true,
+  "version": "0.1.0",
+  "description": "AIIde Electron shell — hosts the web UI and manages agent lifecycle",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json"
+  },
+  "dependencies": {
+    "@aiide/shared-protocol": "file:../../packages/shared-protocol"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "electron": "^33.4.0",
+    "electron-vite": "^2.3.0",
+    "typescript": "^5.5.3",
+    "@vitejs/plugin-react": "^4.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0"
+  }
+}

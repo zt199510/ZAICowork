@@ -5,7 +5,9 @@
   "description": "AIIde monorepo (web client + shared protocol + agent backend)",
   "scripts": {
     "dev": "npm run dev --workspace @aiide/web",
+    "dev:electron": "npm run dev --workspace @aiide/electron",
     "build": "npm run build --workspace @aiide/web",
+    "build:electron": "npm run build --workspace @aiide/electron",
     "build:agent": "dotnet build services/agent-dotnet/src/AIIde.Agent/AIIde.Agent.csproj",
     "lint": "npm run lint --workspace @aiide/web",
     "preview": "npm run preview --workspace @aiide/web"

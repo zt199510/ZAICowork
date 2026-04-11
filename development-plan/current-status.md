@@ -1,7 +1,7 @@
 # Current Status
 
 - Updated At: 2026-04-11
-- Overall Progress: 65%
+- Overall Progress: 70%
 - Active Phase: Phase 3
 
 ## Completed Recently
@@ -18,17 +18,18 @@
 10. Vite bridge 子进程 cwd 固定为 monorepo 根目录。
 11. 完成 bash 预确认流程：提交前检测 bash: 行并弹出确认对话框。
 12. 统一工具输出截断元数据（outputTruncated）、前端截断提示、错误码标签与 retryHint 展示。
+13. Phase 3 Batch 1：Electron 工程骨架、preload 安全桥接、main 进程 AgentBridge、transport 抽象（Web HTTP+SSE / Electron IPC 自动切换）、renderer 复用 Web UI。
 
 ## In Progress
 
-1. Phase 3 尚未开始。
+1. Phase 3 Batch 1 已完成代码实现，等待 Electron 依赖安装完成后做端到端验证。
 
 ## Next Actions
 
-1. 启动 Phase 3：Electron Shell 集成。
-2. 实现 renderer -> main -> agent 通道。
-3. 统一协议在 Web 与 Electron 下的行为一致性。
+1. 完成 `npm install`（Electron 二进制下载）并运行 `npm run dev:electron` 端到端验证。
+2. Phase 3 Batch 2：main 进程 agent 健康检查与崩溃自动重连。
+3. Phase 3 Batch 3：统一日志链路（renderer/main/agent）。
 
 ## Blockers
 
-- 无。
+- Electron 二进制下载受网络影响较慢，已配置 npmmirror 加速。

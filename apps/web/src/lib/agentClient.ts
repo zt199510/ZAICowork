@@ -48,7 +48,37 @@ const summarizeEvent = (event: StreamEvent) => {
   }
 }
 
-export function startAgentRun(options: StartAgentRunOptions): AgentRunController {
+// ---------------------------------------------------------------------------
+// Transport abstraction — allows Web (HTTP+SSE) and Electron (IPC) to share
+// the same AgentRunController interface.
+// ---------------------------------------------------------------------------
+
+type ElectronAgentApi = {
+  startRun: (request: AgentRpcRequest) => Promise<{ ok: boolean; runId: string }>
+  cancelRun: (runId: string) => Promise<{ ok: boolean; runId: string }>
+  onRunEvent: (runId: string, callback: (event: StreamEvent) => void) => () => void
+}
+
+declare global {
+  interface Window {
+    agentApi?: ElectronAgentApi
+  }
+}
+
+function isTerminalEvent(event: StreamEvent): boolean {
+  return (
+    event.type === 'run_completed' ||
+    event.type === 'error' ||
+    (event.type === 'status' &&
+      (event.payload.state === 'canceled' || event.payload.state === 'failed'))
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Web transport (HTTP + SSE) — original implementation
+// ---------------------------------------------------------------------------
+
+function startAgentRunWeb(options: StartAgentRunOptions): AgentRunController {
   const runId = crypto.randomUUID()
   const requestId = crypto.randomUUID()
 
@@ -91,12 +121,7 @@ export function startAgentRun(options: StartAgentRunOptions): AgentRunController
       options.onEvent(event)
       log(summarizeEvent(event), event.type === 'error' ? 'error' : 'info')
 
-      if (
-        event.type === 'run_completed' ||
-        event.type === 'error' ||
-        (event.type === 'status' &&
-          (event.payload.state === 'canceled' || event.payload.state === 'failed'))
-      ) {
+      if (isTerminalEvent(event)) {
         finish()
       }
     } catch {
@@ -171,4 +196,92 @@ export function startAgentRun(options: StartAgentRunOptions): AgentRunController
       }
     },
   }
+}
+
+// ---------------------------------------------------------------------------
+// Electron transport (IPC via preload bridge)
+// ---------------------------------------------------------------------------
+
+function startAgentRunElectron(options: StartAgentRunOptions): AgentRunController {
+  const api = window.agentApi!
+  const runId = crypto.randomUUID()
+  const requestId = crypto.randomUUID()
+
+  let finished = false
+  let unsubscribe: (() => void) | null = null
+  let resolveDone: () => void = () => {}
+
+  const done = new Promise<void>((resolve) => {
+    resolveDone = resolve
+  })
+
+  const log = (message: string, level: AgentLogEntry['level'] = 'info') => {
+    options.onLog?.(createLogEntry(message, level))
+  }
+
+  const finish = () => {
+    if (finished) return
+    finished = true
+    unsubscribe?.()
+    unsubscribe = null
+    resolveDone()
+  }
+
+  // Subscribe to events before starting the run so we don't miss any.
+  unsubscribe = api.onRunEvent(runId, (event: StreamEvent) => {
+    options.onEvent(event)
+    log(summarizeEvent(event), event.type === 'error' ? 'error' : 'info')
+
+    if (isTerminalEvent(event)) {
+      finish()
+    }
+  })
+
+  const request: AgentRpcRequest = {
+    id: requestId,
+    method: 'agent.run',
+    params: {
+      runId,
+      prompt: options.prompt,
+      model: options.model,
+      systemPrompt: options.systemPrompt,
+    },
+  }
+
+  void api.startRun(request)
+    .then(() => {
+      log(`agent.run 已提交（IPC），runId=${runId}`)
+    })
+    .catch((error: Error) => {
+      options.onError(error.message, runId)
+      log(`agent.run 提交失败（IPC）：${error.message}`, 'error')
+      finish()
+    })
+
+  return {
+    runId,
+    done,
+    cancel: async () => {
+      if (finished) return
+      log('正在发送取消请求（IPC）。')
+      try {
+        await api.cancelRun(runId)
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error)
+        options.onError(message, runId)
+        log(`取消请求失败（IPC）：${message}`, 'error')
+      }
+    },
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Public API — auto-detects transport
+// ---------------------------------------------------------------------------
+
+export function startAgentRun(options: StartAgentRunOptions): AgentRunController {
+  if (window.agentApi) {
+    return startAgentRunElectron(options)
+  }
+  return startAgentRunWeb(options)
 }

@@ -129,3 +129,29 @@
 - Open Items:
   1. 开发态端到端手工验证（用户须在 npm run dev 下测试 bash 确认流、截断提示、错误展示）
 - Next First Step: 启动 Phase 3：Electron Shell 集成
+
+---
+
+### [2026-04-11 Phase 3] Session Summary
+
+- Owner: Copilot + 用户
+- Scope: Phase 3 Batch 1 — Electron 骨架 + preload + IPC 基础链路
+- Changes:
+  1. 新增 `apps/electron` workspace：package.json、electron-vite.config.ts、tsconfig (node + renderer)
+  2. Electron main 进程入口 (src/main/index.ts)：BrowserWindow + IPC handler 注册
+  3. AgentBridge 类 (src/main/agent-bridge.ts)：从 Vite localAgentBridge 迁移 run registry、dotnet 子进程管理、stdout 事件解析、cancel、cleanup 逻辑
+  4. preload 安全桥接 (src/preload/index.ts)：contextBridge 暴露最小 agentApi（startRun / cancelRun / onRunEvent）
+  5. Electron renderer (src/renderer/)：直接复用 web/src/App 和样式，无重复 UI 代码
+  6. agentClient.ts transport 抽象：拆出 startAgentRunWeb (HTTP+SSE) 和 startAgentRunElectron (IPC)，通过 window.agentApi 自动检测切换；导出的 startAgentRun 签名不变
+  7. 根 package.json 新增 dev:electron / build:electron 脚本
+  8. 新增 .npmrc 配置 Electron 镜像加速
+- Verified:
+  1. `npx tsc -b` 通过（web workspace 零错误）
+  2. `npx eslint .` 通过（web workspace 零警告）
+  3. `npm run build:agent` 通过（0 错误 0 警告）
+  4. IDE 类型检查：所有新增文件零 TS 错误
+- Open Items:
+  1. Electron 二进制下载完成后运行 `npm run dev:electron` 做端到端验证
+  2. Phase 3 Batch 2：main 进程 agent 健康检查与崩溃自动重连
+  3. Phase 3 Batch 3：统一日志链路（renderer/main/agent）
+- Next First Step: 完成 npm install（Electron 二进制），运行 npm run dev:electron 验证 renderer → main → agent 闭环
