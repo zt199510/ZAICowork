@@ -63,9 +63,12 @@ public sealed class BashTool : ITool
 
         var status = exitCode == 0 ? "completed" : "failed";
         var preview = exitCode == 0
-            ? $"退出码 0, {stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length} 行输出"
+            ? $"退出码 0, {stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length} 行输出{(truncated ? ", 已截断" : "")}"
             : $"退出码 {exitCode}: {(stderr.Length > 80 ? stderr[..80] + "…" : stderr)}";
 
-        return new ToolResult(status, preview, output, (int)sw.ElapsedMilliseconds, exitCode != 0 ? "nonzero_exit" : null) { ExitCode = exitCode };
+        var errorCode = exitCode != 0 ? "nonzero_exit" : null;
+        var retryHint = exitCode != 0 ? "检查命令语法或权限后重试。" : null;
+
+        return new ToolResult(status, preview, output, (int)sw.ElapsedMilliseconds, errorCode, retryHint) { ExitCode = exitCode, OutputTruncated = truncated };
     }
 }

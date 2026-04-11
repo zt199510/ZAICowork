@@ -18,6 +18,7 @@ export type ToolCallEntry = {
   status: ToolCallStatus
   resultPreview?: string
   outputText?: string
+  outputTruncated?: boolean
   durationMs?: number
   errorCode?: string
   retryHint?: string

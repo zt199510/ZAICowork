@@ -104,3 +104,28 @@
   3. 工具输出截断与折叠 UI 优化
   4. 完整错误码体系与重试建议展示
 - Next First Step: 启动 npm run dev 后手工验证 read:/grep:/bash: 三个工具的端到端执行与 ToolCard 渲染
+
+---
+
+### [2026-04-11 Session] Session Summary
+
+- Owner: Copilot + 用户
+- Scope: Phase 2 收尾 — 确认策略、输出截断、错误码展示
+- Changes:
+  1. shared-protocol：ToolCallCompletedPayload 新增 outputTruncated 字段
+  2. agent-dotnet ToolResult 新增 OutputTruncated 属性
+  3. ReadTool/GrepTool/BashTool 统一截断行为，显式设置 OutputTruncated
+  4. GrepTool 截断时 preview 追加"已截断"提示；补齐 process_start_failed retryHint
+  5. BashTool 失败时补齐稳定 errorCode(nonzero_exit) + retryHint
+  6. Program.cs 事件透传新增 outputTruncated 字段
+  7. 前端 bash 预确认流程：App.tsx handleSubmit 检测 bash: 行，弹出确认对话框
+  8. ToolCallEntry 新增 outputTruncated 字段，App.tsx tool_call_completed handler 传入
+  9. ToolCard 展示：截断徽章、errorCode 标签、retryHint 建议、分离结构化错误与普通提示
+  10. App.css 新增 bash-confirm-dialog 样式、tool-card__truncated-badge、tool-card__error-code/label/retry-hint
+- Verified:
+  1. `npm run lint` 通过
+  2. `npm run build` 通过（tsc + vite）
+  3. `npm run build:agent` 通过（0 错误 0 警告）
+- Open Items:
+  1. 开发态端到端手工验证（用户须在 npm run dev 下测试 bash 确认流、截断提示、错误展示）
+- Next First Step: 启动 Phase 3：Electron Shell 集成

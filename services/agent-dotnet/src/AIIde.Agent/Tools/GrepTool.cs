@@ -43,21 +43,22 @@ public sealed class GrepTool : ITool
 
         using var proc = Process.Start(psi);
         if (proc is null)
-            return new ToolResult("failed", "无法启动 grep 进程。", "", (int)sw.ElapsedMilliseconds, "process_start_failed");
+            return new ToolResult("failed", "无法启动 grep 进程。", "", (int)sw.ElapsedMilliseconds, "process_start_failed", "检查系统环境后重试。");
 
         var stdout = await proc.StandardOutput.ReadToEndAsync(ct);
         var stderr = await proc.StandardError.ReadToEndAsync(ct);
         await proc.WaitForExitAsync(ct);
 
         var exitCode = proc.ExitCode;
-        var output = stdout.Length > MaxOutputChars ? stdout[..MaxOutputChars] + "\n…[已截断]" : stdout;
+        var truncated = stdout.Length > MaxOutputChars;
+        var output = truncated ? stdout[..MaxOutputChars] + "\n…[已截断]" : stdout;
         var matchCount = stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
         var preview = exitCode == 0
-            ? $"找到 {matchCount} 处匹配"
-            : matchCount > 0 ? $"找到 {matchCount} 处匹配" : "无匹配结果";
+            ? $"找到 {matchCount} 处匹配{(truncated ? ", 已截断" : "")}"
+            : matchCount > 0 ? $"找到 {matchCount} 处匹配{(truncated ? ", 已截断" : "")}" : "无匹配结果";
 
         var status = (exitCode == 0 || matchCount > 0) ? "completed" : "completed";
-        return new ToolResult(status, preview, output, (int)sw.ElapsedMilliseconds) { ExitCode = exitCode };
+        return new ToolResult(status, preview, output, (int)sw.ElapsedMilliseconds) { ExitCode = exitCode, OutputTruncated = truncated };
     }
 
     private static (string? executable, string args) FindGrepExecutable(string pattern, string path)

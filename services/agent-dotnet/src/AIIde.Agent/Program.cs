@@ -93,6 +93,7 @@ while (true)
                 status = result.Status,
                 resultPreview = result.ResultPreview,
                 outputText = result.OutputText,
+                outputTruncated = result.OutputTruncated,
                 durationMs = result.DurationMs,
                 exitCode = result.ExitCode,
                 errorCode = result.ErrorCode,

@@ -52,6 +52,7 @@ export interface ToolCallCompletedPayload {
   status: ToolCallStatus
   resultPreview: string
   outputText: string
+  outputTruncated: boolean
   durationMs: number
   exitCode?: number
   errorCode?: string

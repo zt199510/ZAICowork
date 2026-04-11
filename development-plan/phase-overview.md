@@ -20,7 +20,7 @@
 
 ## Phase 2 - Tool Execution Loop
 
-- Status: in-progress
+- Status: completed
 - Goal: 引入最小工具执行（Read/Grep/Bash）并回传结果
 - Exit Criteria:
   - Tool call 可视化

@@ -175,6 +175,7 @@ function App() {
   const [runState, setRunState] = useState<RunState>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [activeRunId, setActiveRunId] = useState<string | null>(null)
+  const [bashConfirmCommands, setBashConfirmCommands] = useState<string[] | null>(null)
   const controllerRef = useRef<AgentRunController | null>(null)
   const runSessionMapRef = useRef<Map<string, string>>(new Map())
   const messageListRef = useRef<HTMLDivElement | null>(null)
@@ -317,13 +318,13 @@ function App() {
         break
       }
       case 'tool_call_completed': {
-        const { callId, toolName, status, resultPreview, outputText, durationMs, errorCode, retryHint } = event.payload
+        const { callId, toolName, status, resultPreview, outputText, outputTruncated, durationMs, errorCode, retryHint } = event.payload
         const sessionIdCompleted = runSessionMapRef.current.get(event.runId)
         if (!sessionIdCompleted) break
         updateSessionRecord(sessionIdCompleted, (session) => {
           const entry: ToolCallEntry = {
             callId, toolName, inputSummary: session.toolCalls.get(callId)?.inputSummary ?? toolName,
-            status, resultPreview, outputText, durationMs, errorCode, retryHint,
+            status, resultPreview, outputText, outputTruncated, durationMs, errorCode, retryHint,
           }
           const nextToolCalls = new Map(session.toolCalls)
           nextToolCalls.set(callId, entry)
@@ -388,14 +389,8 @@ function App() {
     setErrorMessage(null)
   }
 
-  const handleSubmit = () => {
+  const executeRun = (trimmedPrompt: string) => {
     if (!activeSession) {
-      return
-    }
-
-    const trimmedPrompt = prompt.trim()
-
-    if (!trimmedPrompt || runState === 'running') {
       return
     }
 
@@ -457,6 +452,44 @@ function App() {
     })
   }
 
+  const handleSubmit = () => {
+    if (!activeSession) {
+      return
+    }
+
+    const trimmedPrompt = prompt.trim()
+
+    if (!trimmedPrompt || runState === 'running') {
+      return
+    }
+
+    // Detect bash: lines and require confirmation
+    const bashLines = trimmedPrompt
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => /^bash:/i.test(l))
+      .map((l) => l.replace(/^bash:\s*/i, ''))
+
+    if (bashLines.length > 0) {
+      setBashConfirmCommands(bashLines)
+      return
+    }
+
+    executeRun(trimmedPrompt)
+  }
+
+  const handleBashConfirm = () => {
+    setBashConfirmCommands(null)
+    const trimmedPrompt = prompt.trim()
+    if (trimmedPrompt) {
+      executeRun(trimmedPrompt)
+    }
+  }
+
+  const handleBashCancel = () => {
+    setBashConfirmCommands(null)
+  }
+
   const handleCancel = () => {
     void controllerRef.current?.cancel().catch((error: Error) => {
       setRunState('failed')
@@ -495,6 +528,24 @@ function App() {
             />
 
             {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
+
+            {bashConfirmCommands ? (
+              <div className="bash-confirm-overlay">
+                <div className="bash-confirm-dialog">
+                  <h3 className="bash-confirm-dialog__title">确认执行 Shell 命令</h3>
+                  <p className="bash-confirm-dialog__desc">以下命令将在本地 shell 中执行：</p>
+                  <ul className="bash-confirm-dialog__list">
+                    {bashConfirmCommands.map((cmd, i) => (
+                      <li key={i}><code>{cmd}</code></li>
+                    ))}
+                  </ul>
+                  <div className="bash-confirm-dialog__actions">
+                    <button type="button" className="button button--ghost" onClick={handleBashCancel}>取消</button>
+                    <button type="button" className="button button--primary" onClick={handleBashConfirm}>确认执行</button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
 
             <MessageTimeline ref={messageListRef} messages={messages} timeline={timeline} />
 

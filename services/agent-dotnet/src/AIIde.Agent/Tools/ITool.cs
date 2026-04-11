@@ -16,6 +16,7 @@ public sealed record ToolResult(
     string? RetryHint = null)
 {
     public int? ExitCode { get; init; }
+    public bool OutputTruncated { get; init; }
 }
 
 public sealed record ToolInvocation(

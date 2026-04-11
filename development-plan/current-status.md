@@ -1,8 +1,8 @@
 # Current Status
 
-- Updated At: 2026-04-10
-- Overall Progress: 55%
-- Active Phase: Phase 2
+- Updated At: 2026-04-11
+- Overall Progress: 65%
+- Active Phase: Phase 3
 
 ## Completed Recently
 
@@ -16,17 +16,18 @@
 8. 重构 agent-dotnet：异步运行循环、显式前缀命令解析、read/grep/bash 三工具执行器、run 级超时与工具级超时。
 9. 前端 ToolCard 时间线：TimelineItem 建模、handleStreamEvent 适配 tool_call 事件、ToolCard 组件与样式。
 10. Vite bridge 子进程 cwd 固定为 monorepo 根目录。
+11. 完成 bash 预确认流程：提交前检测 bash: 行并弹出确认对话框。
+12. 统一工具输出截断元数据（outputTruncated）、前端截断提示、错误码标签与 retryHint 展示。
 
 ## In Progress
 
-1. Phase 2 剩余项：用户确认策略、工具输出折叠、完整错误码体系。
+1. Phase 3 尚未开始。
 
 ## Next Actions
 
-1. 开发态手工端到端验证（read/grep/bash 三工具 + 异常路径）。
-2. 补充工具输出截断与折叠 UI。
-3. 设计高风险工具确认策略。
-4. 补齐出错时的结构化错误码与重试建议展示。
+1. 启动 Phase 3：Electron Shell 集成。
+2. 实现 renderer -> main -> agent 通道。
+3. 统一协议在 Web 与 Electron 下的行为一致性。
 
 ## Blockers
 

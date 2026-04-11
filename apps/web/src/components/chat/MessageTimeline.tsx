@@ -31,12 +31,22 @@ function ToolCard({ entry }: { entry: ToolCallEntry }) {
 
       {!isRunning && entry.outputText ? (
         <details className="tool-card__output">
-          <summary>查看输出</summary>
+          <summary>
+            查看输出
+            {entry.outputTruncated ? <span className="tool-card__truncated-badge">已截断</span> : null}
+          </summary>
           <pre>{entry.outputText}</pre>
         </details>
       ) : null}
 
-      {isFailed && entry.retryHint ? (
+      {isFailed && entry.errorCode ? (
+        <p className="tool-card__error-code">
+          <span className="tool-card__error-label">{entry.errorCode}</span>
+          {entry.retryHint ? <span className="tool-card__retry-hint">{entry.retryHint}</span> : null}
+        </p>
+      ) : null}
+
+      {isFailed && !entry.errorCode && entry.retryHint ? (
         <p className="tool-card__hint">{entry.retryHint}</p>
       ) : null}
     </article>

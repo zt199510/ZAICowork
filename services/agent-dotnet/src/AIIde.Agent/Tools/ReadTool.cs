@@ -40,6 +40,6 @@ public sealed class ReadTool : ITool
         var lineCount = content.Split('\n').Length;
         var preview = $"{path} ({lineCount} 行{(truncated ? ", 已截断" : "")})";
 
-        return new ToolResult("completed", preview, output, (int)sw.ElapsedMilliseconds);
+        return new ToolResult("completed", preview, output, (int)sw.ElapsedMilliseconds) { OutputTruncated = truncated };
     }
 }
