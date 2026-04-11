@@ -37,7 +37,21 @@ export type ModuleView = Exclude<PrimaryView, 'chat'>
 
 export type WorkMode = 'clarify' | 'cowork' | 'code' | 'acp'
 
-export type RightPanelTab = 'plan' | 'logs' | 'events'
+export type BottomPanelTab = 'plan' | 'logs' | 'events'
+
+export type AuxiliaryPanelTab = 'details' | 'artifacts'
+
+export type ShellState = {
+  activeActivity: PrimaryView
+  leftSidebarWidth: number
+  isLeftSidebarOpen: boolean
+  bottomPanelHeight: number
+  isBottomPanelOpen: boolean
+  activeBottomTab: BottomPanelTab
+  auxiliaryPanelWidth: number
+  isAuxiliaryPanelOpen: boolean
+  activeAuxiliaryTab: AuxiliaryPanelTab
+}
 
 export type EventPreview = {
   id: string

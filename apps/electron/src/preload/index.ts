@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { StreamEvent } from '@aiide/shared-protocol'
+import type { BridgeState, StreamEvent } from '@aiide/shared-protocol'
 
 export type AgentApi = {
   startRun: (request: {
@@ -19,6 +19,10 @@ export type AgentApi = {
     runId: string,
     callback: (event: StreamEvent) => void,
   ) => () => void
+
+  getBridgeState: () => Promise<BridgeState>
+
+  onBridgeStateChange: (callback: (state: BridgeState) => void) => () => void
 }
 
 const agentApi: AgentApi = {
@@ -30,6 +34,19 @@ const agentApi: AgentApi = {
     const channel = `agent:run-event:${runId}`
     const handler = (_event: Electron.IpcRendererEvent, data: StreamEvent): void => {
       callback(data)
+    }
+    ipcRenderer.on(channel, handler)
+    return () => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+
+  getBridgeState: () => ipcRenderer.invoke('agent:get-bridge-state'),
+
+  onBridgeStateChange: (callback) => {
+    const channel = 'agent:bridge-state-changed'
+    const handler = (_event: Electron.IpcRendererEvent, state: BridgeState): void => {
+      callback(state)
     }
     ipcRenderer.on(channel, handler)
     return () => {

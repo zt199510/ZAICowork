@@ -13,8 +13,8 @@
 - [x] main 进程托管 agent 启停（Batch 1：AgentBridge 类）
 - [x] renderer 通过 IPC 请求 main，再由 main 转发 agent
 - [x] agentClient.ts transport 抽象：Web HTTP+SSE / Electron IPC 自动切换
-- [ ] main 进程 agent 健康检查（Batch 2）
-- [ ] 崩溃自动重连（Batch 2）
+- [x] main 进程健康检查（Batch 2）
+- [x] 崩溃自动重连（Batch 2）
 - [ ] 统一日志链路（renderer/main/agent）（Batch 3）
 
 ## Acceptance

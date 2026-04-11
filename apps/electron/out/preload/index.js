@@ -12,6 +12,17 @@ const agentApi = {
     return () => {
       electron.ipcRenderer.removeListener(channel, handler);
     };
+  },
+  getBridgeState: () => electron.ipcRenderer.invoke("agent:get-bridge-state"),
+  onBridgeStateChange: (callback) => {
+    const channel = "agent:bridge-state-changed";
+    const handler = (_event, state) => {
+      callback(state);
+    };
+    electron.ipcRenderer.on(channel, handler);
+    return () => {
+      electron.ipcRenderer.removeListener(channel, handler);
+    };
   }
 };
 electron.contextBridge.exposeInMainWorld("agentApi", agentApi);

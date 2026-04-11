@@ -1,5 +1,7 @@
 export type RunState = 'idle' | 'running' | 'completed' | 'failed' | 'canceled'
 
+export type BridgeState = 'idle' | 'ready' | 'reconnecting' | 'failed'
+
 export type ToolName = 'read' | 'grep' | 'bash'
 
 export type ToolCallStatus = 'running' | 'completed' | 'failed'

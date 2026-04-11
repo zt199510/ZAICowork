@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
+import type { BridgeState } from '@aiide/shared-protocol'
 import { AgentBridge } from './agent-bridge'
 
 let mainWindow: BrowserWindow | null = null
@@ -29,6 +30,10 @@ app.whenReady().then(() => {
   registerIpcHandlers()
   createWindow()
 
+  agentBridge.onStateChange((state: BridgeState) => {
+    mainWindow?.webContents.send('agent:bridge-state-changed', state)
+  })
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow()
@@ -57,5 +62,9 @@ function registerIpcHandlers(): void {
   ipcMain.handle('agent:cancel-run', async (_event, runId: string) => {
     agentBridge.cancelRun(runId)
     return { ok: true, runId }
+  })
+
+  ipcMain.handle('agent:get-bridge-state', () => {
+    return agentBridge.state
   })
 }

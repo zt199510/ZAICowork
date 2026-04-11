@@ -1,23 +1,57 @@
 :root {
   color-scheme: dark;
-  --background: #0d0f13;
-  --background-elevated: #11141a;
-  --surface: rgba(20, 23, 29, 0.94);
-  --surface-soft: rgba(24, 27, 35, 0.88);
-  --sidebar: rgba(14, 16, 20, 0.98);
-  --sidebar-surface: rgba(18, 20, 25, 0.96);
+
+  /* IDE Theme Tokens - Core (Deep Blue/Dark Grey IDE Style) */
+  --ide-bg: #1e1e2e; /* Base deep blue */
+  --ide-sidebar: #181825; /* Slightly darker siderbar */
+  --ide-activity-bar: #11111b; /* Darkest left rail */
+  --ide-editor-bg: #1e1e2e;
+  --ide-panel-bg: #181825;
+  --ide-toolbar-bg: #181825;
+
+  /* IDE Theme Tokens - Surfaces */
+  --background: var(--ide-bg);
+  --background-elevated: #313244;
+  --surface: #181825;
+  --surface-soft: #313244;
+  --sidebar: var(--ide-sidebar);
+  --sidebar-surface: var(--ide-sidebar);
   --sidebar-hover: rgba(255, 255, 255, 0.05);
-  --sidebar-active: rgba(255, 255, 255, 0.08);
-  --foreground: #f5f6f8;
-  --foreground-soft: #d7dae0;
-  --muted: #9198a4;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --accent-cyan: #79c2ff;
-  --accent-emerald: #7dd3ae;
-  --accent-amber: #e8bc73;
-  --shadow-soft: 0 24px 48px rgba(0, 0, 0, 0.18);
-  font-family: 'IBM Plex Sans', 'Segoe UI', 'PingFang SC', sans-serif;
+  --sidebar-active: rgba(255, 255, 255, 0.1);
+
+  /* IDE Theme Tokens - Content */
+  --foreground: #cdd6f4;
+  --foreground-strong: #ffffff;
+  --foreground-soft: #a6adc8;
+  --muted: #6c7086;
+
+  /* IDE Theme Tokens - Interaction & Borders */
+  --border: #313244;
+  --border-strong: #45475a;
+  --accent: #89b4fa; /* Soft blue accent */
+  --accent-cyan: #89dceb;
+  --accent-emerald: #a6e3a1;
+  --accent-amber: #f9e2af;
+  --focus-border: #89b4fa;
+  --selection-bg: rgba(137, 180, 250, 0.2);
+
+  /* IDE Theme Tokens - Status */
+  --status-info: #89b4fa;
+  --status-success: #a6e3a1;
+  --status-warning: #f9e2af;
+  --status-error: #f38ba8;
+
+  /* IDE Layout Constants */
+  --activity-bar-width: 48px;
+  --sidebar-min-width: 170px;
+  --sidebar-default-width: 260px;
+  --panel-min-height: 160px;
+  --panel-default-height: 240px;
+  --auxiliary-min-width: 200px;
+  --auxiliary-default-width: 320px;
+
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -29,23 +63,44 @@
 * {
   box-sizing: border-box;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+  scrollbar-color: var(--border) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+*:hover::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted) !important;
 }
 
 html,
 body,
 #root {
-  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   color: var(--foreground);
-  background:
-    radial-gradient(circle at 10% 12%, rgba(232, 188, 115, 0.08), transparent 28%),
-    radial-gradient(circle at 88% 14%, rgba(121, 194, 255, 0.08), transparent 24%),
-    linear-gradient(180deg, #0b0c10 0%, #0f1116 100%);
+  background: var(--background);
 }
 
 button,

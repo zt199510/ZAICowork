@@ -17,37 +17,28 @@ function ToolCard({ entry }: { entry: ToolCallEntry }) {
         <span className="tool-card__name">{entry.toolName}</span>
         <span className="tool-card__summary">{entry.inputSummary}</span>
         {entry.durationMs != null && !isRunning ? (
-          <span className="tool-card__duration">{entry.durationMs}ms</span>
+          <span className="tool-card__duration" style={{ marginLeft: 'auto', fontSize: '10px', color: 'var(--muted)' }}>
+            {entry.durationMs}ms
+          </span>
         ) : null}
       </div>
 
       {isRunning ? (
-        <p className="tool-card__body tool-card__body--running">执行中...</p>
+        <div className="tool-card__body tool-card__body--running">执行中...</div>
       ) : null}
 
       {!isRunning && entry.resultPreview ? (
-        <p className="tool-card__body">{entry.resultPreview}</p>
+        <div className="tool-card__body">{entry.resultPreview}</div>
       ) : null}
 
       {!isRunning && entry.outputText ? (
         <details className="tool-card__output">
           <summary>
-            查看输出
-            {entry.outputTruncated ? <span className="tool-card__truncated-badge">已截断</span> : null}
+            OUT
+            {entry.outputTruncated ? <span className="tool-card__truncated-badge" style={{ marginLeft: '8px', opacity: 0.6 }}>TRUNCATED</span> : null}
           </summary>
           <pre>{entry.outputText}</pre>
         </details>
-      ) : null}
-
-      {isFailed && entry.errorCode ? (
-        <p className="tool-card__error-code">
-          <span className="tool-card__error-label">{entry.errorCode}</span>
-          {entry.retryHint ? <span className="tool-card__retry-hint">{entry.retryHint}</span> : null}
-        </p>
-      ) : null}
-
-      {isFailed && !entry.errorCode && entry.retryHint ? (
-        <p className="tool-card__hint">{entry.retryHint}</p>
       ) : null}
     </article>
   )
@@ -55,16 +46,12 @@ function ToolCard({ entry }: { entry: ToolCallEntry }) {
 
 export const MessageTimeline = forwardRef<HTMLDivElement, MessageTimelineProps>(
   function MessageTimeline({ messages, timeline }, ref) {
-    if (messages.length === 0 && timeline.length === 0) {
+    if (messages.length === 0) {
       return (
-        <section className="message-list message-list--empty" ref={ref} aria-label="消息流">
-          <div className="message-empty-state">
-            <p className="section-kicker">Ready</p>
-            <h2>输入一个任务目标，开始第一轮执行。</h2>
-            <p>这里会承接会话消息、运行状态和后续的差异产物。</p>
-            <p className="message-empty-hint">
-              支持命令：<code>read: &lt;path&gt;</code> · <code>grep: &lt;pattern&gt; [path]</code> · <code>bash: &lt;command&gt;</code>
-            </p>
+        <section className="message-list message-list--empty" ref={ref}>
+          <div style={{ margin: 'auto', textAlign: 'center', opacity: 0.5 }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 500, marginBottom: '8px' }}>ZAICowork Workbench</h2>
+            <p style={{ fontSize: '13px' }}>Start by describing your task.</p>
           </div>
         </section>
       )

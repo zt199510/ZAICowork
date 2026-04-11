@@ -2,7 +2,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { createInterface } from 'node:readline'
 import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
-import type { AgentRpcEvent, StreamEvent } from '@aiide/shared-protocol'
+import type { AgentRpcEvent, BridgeState, StreamEvent } from '@aiide/shared-protocol'
 
 type RunRecord = {
   runId: string
@@ -20,6 +20,71 @@ type RunRecord = {
  */
 export class AgentBridge {
   private runs = new Map<string, RunRecord>()
+  private _state: BridgeState = 'idle'
+  private _consecutiveFailures = 0
+  private _probeTimer?: ReturnType<typeof setTimeout>
+  private _stateListeners = new Set<(state: BridgeState) => void>()
+
+  private static MAX_FAILURES = 3
+
+  constructor() {
+    void this.probeAndTransition()
+  }
+
+  get state(): BridgeState {
+    return this._state
+  }
+
+  onStateChange(listener: (state: BridgeState) => void): () => void {
+    this._stateListeners.add(listener)
+    return () => { this._stateListeners.delete(listener) }
+  }
+
+  private setState(next: BridgeState): void {
+    if (this._state === next) return
+    this._state = next
+    for (const listener of this._stateListeners) {
+      listener(next)
+    }
+  }
+
+  private probe(): Promise<boolean> {
+    return new Promise((resolve) => {
+      const child = spawn('dotnet', ['--version'], { stdio: 'ignore', timeout: 10_000 })
+      child.on('error', () => resolve(false))
+      child.on('exit', (code) => resolve(code === 0))
+    })
+  }
+
+  private async probeAndTransition(): Promise<void> {
+    this.setState('reconnecting')
+    const available = await this.probe()
+    this.setState(available ? 'ready' : 'failed')
+  }
+
+  private scheduleProbe(): void {
+    if (this._probeTimer) return
+    if (this._state === 'reconnecting') return
+    const delay = Math.min(1000 * 2 ** (this._consecutiveFailures - 1), 10_000)
+    this._probeTimer = setTimeout(() => {
+      this._probeTimer = undefined
+      void this.probeAndTransition()
+    }, delay)
+  }
+
+  private recordRunFailure(): void {
+    this._consecutiveFailures++
+    if (this._consecutiveFailures >= AgentBridge.MAX_FAILURES) {
+      this.scheduleProbe()
+    }
+  }
+
+  private recordRunSuccess(): void {
+    this._consecutiveFailures = 0
+    if (this._state !== 'ready') {
+      this.setState('ready')
+    }
+  }
 
   /** Resolve the monorepo root (two levels above apps/electron). */
   private get monorepoRoot(): string {
@@ -77,6 +142,11 @@ export class AgentBridge {
   ): void {
     const { runId } = request.params
 
+    if (this._state === 'failed') {
+      onEvent(this.createErrorEvent(runId, 'Agent bridge 不可用，请检查 dotnet 环境后重试。', false))
+      return
+    }
+
     const existing = this.runs.get(runId)
     if (existing?.child) {
       onEvent(this.createErrorEvent(runId, 'Run already started.', false))
@@ -128,6 +198,7 @@ export class AgentBridge {
     child.on('error', (error: Error) => {
       if (run.terminal) return
       run.broadcast(this.createErrorEvent(runId, error.message, true))
+      this.recordRunFailure()
     })
 
     child.on('exit', (code: number | null) => {
@@ -143,6 +214,7 @@ export class AgentBridge {
         run.broadcast(
           this.createErrorEvent(runId, `Agent process exited with code ${code ?? 'unknown'}.`, true),
         )
+        this.recordRunFailure()
         return
       }
 
@@ -150,6 +222,7 @@ export class AgentBridge {
         run.broadcast(this.createStatusEvent(runId, 'completed', 'Agent process exited cleanly.'))
         run.terminal = true
         this.scheduleCleanup(run)
+        this.recordRunSuccess()
       }
     })
 
@@ -172,6 +245,11 @@ export class AgentBridge {
   }
 
   dispose(): void {
+    if (this._probeTimer) {
+      clearTimeout(this._probeTimer)
+      this._probeTimer = undefined
+    }
+    this._stateListeners.clear()
     for (const run of this.runs.values()) {
       run.child?.kill()
       run.child = undefined

@@ -8,6 +8,7 @@ type PrimarySidebarProps = {
   activeSessionId: string
   onSelectSession: (sessionId: string) => void
   onCreateSession: () => void
+  width: number
 }
 
 const moduleSidebarContent: Record<ModuleView, { kicker: string; title: string; sections: Array<{ title: string; items: string[] }> }> = {
@@ -51,6 +52,7 @@ export function PrimarySidebar({
   activeSessionId,
   onSelectSession,
   onCreateSession,
+  width,
 }: PrimarySidebarProps) {
   const [search, setSearch] = useState('')
 
@@ -76,7 +78,7 @@ export function PrimarySidebar({
     const content = moduleSidebarContent[activeActivity]
 
     return (
-      <aside className="primary-sidebar" aria-label="Module Navigation">
+      <aside className="primary-sidebar" aria-label="Module Navigation" style={{ width }}>
         <div className="primary-sidebar__header">
           <div>
             <p className="section-kicker">{content.kicker}</p>
@@ -101,48 +103,66 @@ export function PrimarySidebar({
   }
 
   return (
-    <aside className="primary-sidebar" aria-label="Chat Sessions">
-      <div className="primary-sidebar__header">
+    <aside className="primary-sidebar" aria-label="Chat Sessions" style={{ width }}>
+      <header className="primary-sidebar__header">
         <div className="primary-sidebar__title-row">
-          <h2 className="primary-sidebar__title">CHAT</h2>
-          <button type="button" className="sidebar-action-icon" onClick={onCreateSession} title="New Session">
-            <Plus className="sidebar-action-icon__svg" />
+          <h2 className="primary-sidebar__title">
+            {activeActivity === 'chat' ? 'SESSIONS' : activeActivity.toUpperCase()}
+          </h2>
+          <button
+            type="button"
+            className="sidebar-action-icon"
+            onClick={onCreateSession}
+            title="New Session"
+            style={{ opacity: 0.6, background: 'transparent', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex' }}
+          >
+            <Plus size={14} />
           </button>
+        </div>
+      </header>
+
+      <div className="primary-sidebar__search-container">
+        <div className="primary-sidebar__search" style={{ display: 'flex', alignItems: 'center', background: 'var(--background-elevated)', border: '1px solid var(--border)', borderRadius: '2px', padding: '2px 8px' }}>
+          <Search size={12} style={{ opacity: 0.5, marginRight: '6px' }} />
+          <input
+            type="text"
+            style={{ fontSize: '11px', background: 'transparent', border: 'none', color: 'var(--foreground)', outline: 'none', width: '100%', padding: '2px 0' }}
+            placeholder="Filter sessions..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
         </div>
       </div>
 
-      <div className="primary-sidebar__search-container">
-        <label className="primary-sidebar__search">
-          <Search className="primary-sidebar__search-icon" />
-          <input
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search sessions..."
-          />
-        </label>
-      </div>
-
-      <div className="primary-sidebar__session-list">
+      <div className="primary-sidebar__session-list" style={{ flex: 1, overflowY: 'auto' }}>
         {filteredSessions.map((session) => (
-          <button
+          <div
             key={session.id}
-            type="button"
-            className={`primary-sidebar__session-item ${
-              activeSessionId === session.id ? 'is-active' : ''
-            }`}
+            className={`session-item ${session.id === activeSessionId ? 'is-active' : ''}`}
             onClick={() => onSelectSession(session.id)}
           >
-            <div className="primary-sidebar__session-title-row">
-              <span className="primary-sidebar__session-title">{session.title}</span>
-              <span className="primary-sidebar__session-time">{session.updatedAt}</span>
+            <div className="session-item__icon">
+              {session.status === 'running' ? (
+                <Sparkles size={14} className="status-running" />
+              ) : session.status === 'error' ? (
+                <PlugZap size={14} className="status-error" />
+              ) : (
+                <FolderTree size={14} />
+              )}
             </div>
-            <p className="primary-sidebar__session-summary">{session.summary}</p>
-          </button>
+            <div className="session-item__info">
+              <div className="session-item__title">{session.title}</div>
+              <div className="session-item__meta">
+                {session.model} · {new Date(session.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+          </div>
         ))}
 
         {filteredSessions.length === 0 ? (
-          <div className="primary-sidebar__empty">No matching sessions.</div>
+          <div className="primary-sidebar__empty" style={{ padding: '20px', opacity: 0.5, fontSize: '12px', textAlign: 'center' }}>
+            No matching sessions.
+          </div>
         ) : null}
       </div>
     </aside>

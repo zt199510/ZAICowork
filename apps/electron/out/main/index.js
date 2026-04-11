@@ -6,6 +6,63 @@ const node_readline = require("node:readline");
 const node_path = require("node:path");
 class AgentBridge {
   runs = /* @__PURE__ */ new Map();
+  _state = "idle";
+  _consecutiveFailures = 0;
+  _probeTimer;
+  _stateListeners = /* @__PURE__ */ new Set();
+  static MAX_FAILURES = 3;
+  constructor() {
+    void this.probeAndTransition();
+  }
+  get state() {
+    return this._state;
+  }
+  onStateChange(listener) {
+    this._stateListeners.add(listener);
+    return () => {
+      this._stateListeners.delete(listener);
+    };
+  }
+  setState(next) {
+    if (this._state === next) return;
+    this._state = next;
+    for (const listener of this._stateListeners) {
+      listener(next);
+    }
+  }
+  probe() {
+    return new Promise((resolve2) => {
+      const child = node_child_process.spawn("dotnet", ["--version"], { stdio: "ignore", timeout: 1e4 });
+      child.on("error", () => resolve2(false));
+      child.on("exit", (code) => resolve2(code === 0));
+    });
+  }
+  async probeAndTransition() {
+    this.setState("reconnecting");
+    const available = await this.probe();
+    this.setState(available ? "ready" : "failed");
+  }
+  scheduleProbe() {
+    if (this._probeTimer) return;
+    if (this._state === "reconnecting") return;
+    const delay = Math.min(1e3 * 2 ** (this._consecutiveFailures - 1), 1e4);
+    this._probeTimer = setTimeout(() => {
+      this._probeTimer = void 0;
+      void this.probeAndTransition();
+    }, delay);
+  }
+  recordRunFailure() {
+    this._consecutiveFailures++;
+    if (this._consecutiveFailures >= AgentBridge.MAX_FAILURES) {
+      this.scheduleProbe();
+    }
+  }
+  recordRunSuccess() {
+    this._consecutiveFailures = 0;
+    if (this._state !== "ready") {
+      this.setState("ready");
+    }
+  }
   /** Resolve the monorepo root (two levels above apps/electron). */
   get monorepoRoot() {
     return node_path.resolve(__dirname, "../../../..");
@@ -42,6 +99,10 @@ class AgentBridge {
   }
   startRun(request, onEvent) {
     const { runId } = request.params;
+    if (this._state === "failed") {
+      onEvent(this.createErrorEvent(runId, "Agent bridge 不可用，请检查 dotnet 环境后重试。", false));
+      return;
+    }
     const existing = this.runs.get(runId);
     if (existing?.child) {
       onEvent(this.createErrorEvent(runId, "Run already started.", false));
@@ -84,6 +145,7 @@ class AgentBridge {
     child.on("error", (error) => {
       if (run.terminal) return;
       run.broadcast(this.createErrorEvent(runId, error.message, true));
+      this.recordRunFailure();
     });
     child.on("exit", (code) => {
       run.child = void 0;
@@ -96,12 +158,14 @@ class AgentBridge {
         run.broadcast(
           this.createErrorEvent(runId, `Agent process exited with code ${code ?? "unknown"}.`, true)
         );
+        this.recordRunFailure();
         return;
       }
       if (!run.terminal) {
         run.broadcast(this.createStatusEvent(runId, "completed", "Agent process exited cleanly."));
         run.terminal = true;
         this.scheduleCleanup(run);
+        this.recordRunSuccess();
       }
     });
     child.stdin.write(`${JSON.stringify(request)}
@@ -119,6 +183,11 @@ class AgentBridge {
     run.child = void 0;
   }
   dispose() {
+    if (this._probeTimer) {
+      clearTimeout(this._probeTimer);
+      this._probeTimer = void 0;
+    }
+    this._stateListeners.clear();
     for (const run of this.runs.values()) {
       run.child?.kill();
       run.child = void 0;
@@ -151,6 +220,9 @@ function createWindow() {
 electron.app.whenReady().then(() => {
   registerIpcHandlers();
   createWindow();
+  agentBridge.onStateChange((state) => {
+    mainWindow?.webContents.send("agent:bridge-state-changed", state);
+  });
   electron.app.on("activate", () => {
     if (electron.BrowserWindow.getAllWindows().length === 0) {
       createWindow();
@@ -174,5 +246,8 @@ function registerIpcHandlers() {
   electron.ipcMain.handle("agent:cancel-run", async (_event, runId) => {
     agentBridge.cancelRun(runId);
     return { ok: true, runId };
+  });
+  electron.ipcMain.handle("agent:get-bridge-state", () => {
+    return agentBridge.state;
   });
 }

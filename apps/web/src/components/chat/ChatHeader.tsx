@@ -1,6 +1,13 @@
 import { Briefcase, CircleHelp, Code2, FolderTree, ShieldCheck } from 'lucide-react'
-import type { RunState } from '@aiide/shared-protocol'
+import type { BridgeState, RunState } from '@aiide/shared-protocol'
 import type { WorkMode } from '../../types/workbench'
+
+const bridgeLabel: Record<BridgeState, string> = {
+  idle: 'Connecting',
+  ready: 'Connected',
+  reconnecting: 'Reconnecting',
+  failed: 'Unavailable',
+}
 
 type ChatHeaderProps = {
   title: string
@@ -8,6 +15,7 @@ type ChatHeaderProps = {
   runState: RunState
   statusText: string
   workMode: WorkMode
+  bridgeState: BridgeState | null
   onWorkModeChange: (mode: WorkMode) => void
 }
 
@@ -28,46 +36,24 @@ export function ChatHeader({
   runState,
   statusText,
   workMode,
+  bridgeState,
   onWorkModeChange,
 }: ChatHeaderProps) {
   return (
-    <header className="chat-header">
-      <div className="chat-header__top-row">
-        <div>
-          <p className="section-kicker">AIIde Workspace</p>
-          <h1 className="chat-header__title">{title}</h1>
-          <p className="chat-header__summary">{summary}</p>
-        </div>
-
-        <div className="chat-header__meta">
-          <div className={`status-pill status-pill--${runState}`}>{statusText}</div>
-          <div className="model-pill">GPT-5.4</div>
-        </div>
+    <header className="chat-workspace-header">
+      <div className="chat-workspace-header__main">
+        <h1 className="chat-workspace-header__title">{title}</h1>
       </div>
 
-      <div className="chat-header__bottom-row">
-        <div className="mode-switch" role="tablist" aria-label="会话模式">
-          {modeOptions.map((option) => {
-            const Icon = option.icon
-
-            return (
-              <button
-                key={option.value}
-                type="button"
-                className={`mode-switch__button ${workMode === option.value ? 'is-active' : ''}`}
-                data-mode={option.value}
-                onClick={() => onWorkModeChange(option.value)}
-              >
-                <Icon className="mode-switch__icon" />
-                <span>{option.label}</span>
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="chat-header__path">
-          <FolderTree className="chat-header__path-icon" />
-          <span>apps/web · services/agent-dotnet · shared-protocol</span>
+      <div className="chat-workspace-header__meta">
+        <div className="connection-status">
+          <FolderTree size={14} className="folder-icon" />
+          <span className="workspace-path">ZAICowork</span>
+          {bridgeState && bridgeState !== 'ready' && (
+             <span className={`bridge-pill bridge-pill--${bridgeState}`}>
+               {bridgeLabel[bridgeState]}
+             </span>
+          )}
         </div>
       </div>
     </header>

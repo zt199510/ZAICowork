@@ -1,4 +1,4 @@
-import type { AgentRpcRequest, StreamEvent } from '@aiide/shared-protocol'
+import type { AgentRpcRequest, BridgeState, StreamEvent } from '@aiide/shared-protocol'
 
 export type AgentLogEntry = {
   id: string
@@ -57,6 +57,8 @@ type ElectronAgentApi = {
   startRun: (request: AgentRpcRequest) => Promise<{ ok: boolean; runId: string }>
   cancelRun: (runId: string) => Promise<{ ok: boolean; runId: string }>
   onRunEvent: (runId: string, callback: (event: StreamEvent) => void) => () => void
+  getBridgeState: () => Promise<BridgeState>
+  onBridgeStateChange: (callback: (state: BridgeState) => void) => () => void
 }
 
 declare global {
@@ -273,6 +275,19 @@ function startAgentRunElectron(options: StartAgentRunOptions): AgentRunControlle
       }
     },
   }
+}
+
+// ---------------------------------------------------------------------------
+// Bridge health — Electron only
+// ---------------------------------------------------------------------------
+
+export function subscribeBridgeHealth(
+  onStateChange: (state: BridgeState) => void,
+): (() => void) | null {
+  if (!window.agentApi) return null
+  const api = window.agentApi
+  void api.getBridgeState().then(onStateChange)
+  return api.onBridgeStateChange(onStateChange)
 }
 
 // ---------------------------------------------------------------------------

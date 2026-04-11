@@ -39,35 +39,38 @@ export function PromptComposer({
       <div className="composer__shell">
         <div className="composer__header">
           <label htmlFor="prompt" className="composer__label">
-            输入任务目标
+            {workMode === 'code' ? 'Code Editor' : 'Chat'}
           </label>
-          <div className="composer__meta">
-            <span>{modeHints[workMode]}</span>
-            <span>Ctrl/Cmd + Enter 发送</span>
-          </div>
         </div>
 
         <textarea
           id="prompt"
+          className="composer textarea"
           value={prompt}
           onChange={(event) => onPromptChange(event.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="read: src/index.ts &#10;grep: TODO packages/ &#10;bash: Get-Location"
+          placeholder="输入您的指令..."
           disabled={disabled}
         />
 
         <div className="composer__actions">
-          <button type="button" className="button button--ghost" onClick={onCancel} disabled={!canCancel}>
-            取消运行
-          </button>
-          <button
-            type="button"
-            className="button button--primary"
-            onClick={onSubmit}
-            disabled={!prompt.trim() || disabled}
-          >
-            {disabled ? '执行中...' : '开始执行'}
-          </button>
+          <div className="composer__meta">
+            <span>{modeHints[workMode]}</span>
+            <span>Ctrl + Enter 发送</span>
+          </div>
+          <div className="composer__btn-group">
+            <button type="button" className="button button--ghost" onClick={onCancel} disabled={!canCancel}>
+              取消
+            </button>
+            <button
+              type="button"
+              className="button button--primary"
+              onClick={onSubmit}
+              disabled={!prompt.trim() || disabled}
+            >
+              {disabled ? '执行中...' : '开始执行'}
+            </button>
+          </div>
         </div>
       </div>
     </footer>

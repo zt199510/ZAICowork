@@ -1,18 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { RunState, StreamEvent } from '@aiide/shared-protocol'
+import type { BridgeState, RunState, StreamEvent } from '@aiide/shared-protocol'
 import { ChatHeader } from './components/chat/ChatHeader'
 import { MessageTimeline } from './components/chat/MessageTimeline'
 import { PromptComposer } from './components/chat/PromptComposer'
 import { AppSidebar } from './components/layout/AppSidebar'
-import { ModulePage } from './components/layout/ModulePage'
-import { NavRail } from './components/layout/NavRail'
-import { RightPanel } from './components/layout/RightPanel'
-import { startAgentRun, type AgentLogEntry, type AgentRunController } from './lib/agentClient'
+import { ActivityBar } from './components/layout/ActivityBar'
+import { PrimarySidebar } from './components/layout/PrimarySidebar'
+import { BottomPanel } from './components/layout/BottomPanel'
+import { AuxiliarySidebar } from './components/layout/AuxiliarySidebar'
+import { PanelsTopLeft, LayoutPanelLeft, LayoutPanelTop, PanelsRightBottom } from 'lucide-react'
+import { startAgentRun, subscribeBridgeHealth, type AgentLogEntry, type AgentRunController } from './lib/agentClient'
 import type {
   EventPreview,
   Message,
   PrimaryView,
-  RightPanelTab,
+  BottomPanelTab,
+  AuxiliaryPanelTab,
   Session,
   TimelineItem,
   ToolCallEntry,
@@ -165,17 +168,29 @@ const summarizePrompt = (prompt: string) => {
 function App() {
   const [sessionRecords, setSessionRecords] = useState<SessionRecord[]>(initialSessionRecords)
   const [activeSessionId, setActiveSessionId] = useState(initialSessionRecords[0]?.id ?? '')
-  const [activeView, setActiveView] = useState<PrimaryView>('chat')
+  const [activeActivity, setActiveActivity] = useState<PrimaryView>('chat')
   const [workMode, setWorkMode] = useState<WorkMode>('code')
-  const [rightPanelOpen, setRightPanelOpen] = useState(true)
-  const [rightPanelTab, setRightPanelTab] = useState<RightPanelTab>('plan')
-  const [rightPanelWidth, setRightPanelWidth] = useState(360)
+  
+  // Shell State
+  const [leftSidebarWidth, setLeftSidebarWidth] = useState(260)
+  const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(true)
+  const [bottomPanelHeight, setBottomPanelHeight] = useState(240)
+  const [isBottomPanelOpen, setIsBottomPanelOpen] = useState(true)
+  const [activeBottomTab, setActiveBottomTab] = useState<BottomPanelTab>('logs')
+  const [auxiliaryPanelWidth, setAuxiliaryPanelWidth] = useState(300)
+  const [isAuxiliaryPanelOpen, setIsAuxiliaryPanelOpen] = useState(false)
+  const [activeAuxiliaryTab, setActiveAuxiliaryTab] = useState<AuxiliaryPanelTab>('details')
+
+  const [isResizingSidebar, setIsResizingSidebar] = useState(false)
+  const [isResizingBottom, setIsResizingBottom] = useState(false)
+
   const [events, setEvents] = useState<StreamEvent[]>([])
   const [logs, setLogs] = useState<AgentLogEntry[]>([])
   const [runState, setRunState] = useState<RunState>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [activeRunId, setActiveRunId] = useState<string | null>(null)
   const [bashConfirmCommands, setBashConfirmCommands] = useState<string[] | null>(null)
+  const [bridgeState, setBridgeState] = useState<BridgeState | null>(null)
   const controllerRef = useRef<AgentRunController | null>(null)
   const runSessionMapRef = useRef<Map<string, string>>(new Map())
   const messageListRef = useRef<HTMLDivElement | null>(null)
@@ -200,7 +215,7 @@ function App() {
   )
 
   useEffect(() => {
-    if (activeView !== 'chat') {
+    if (activeActivity !== 'chat') {
       return
     }
 
@@ -210,7 +225,35 @@ function App() {
     }
 
     messageList.scrollTop = messageList.scrollHeight
-  }, [activeView, messages, timeline])
+  }, [activeActivity, messages, timeline])
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isResizingSidebar) {
+        setLeftSidebarWidth(Math.max(170, Math.min(600, e.clientX - 48))) // 48 is Activity Bar width
+      } else if (isResizingBottom) {
+        setBottomPanelHeight(Math.max(100, Math.min(window.innerHeight - 200, window.innerHeight - e.clientY)))
+      }
+    }
+
+    const handleMouseUp = () => {
+      setIsResizingSidebar(false)
+      setIsResizingBottom(false)
+    }
+
+    if (isResizingSidebar || isResizingBottom) {
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', handleMouseUp)
+      document.body.style.cursor = isResizingSidebar ? 'col-resize' : 'row-resize'
+    } else {
+      document.body.style.cursor = 'default'
+    }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [isResizingSidebar, isResizingBottom])
 
   useEffect(
     () => () => {
@@ -218,6 +261,11 @@ function App() {
     },
     [],
   )
+
+  useEffect(() => {
+    const unsubscribe = subscribeBridgeHealth(setBridgeState)
+    return () => { unsubscribe?.() }
+  }, [])
 
   const updateSessionRecord = (sessionId: string, updater: (session: SessionRecord) => SessionRecord) => {
     setSessionRecords((currentSessions) =>
@@ -354,10 +402,15 @@ function App() {
     }))
   }
 
-  const handleSelectView = (view: PrimaryView) => {
-    setActiveView(view)
+  const handleSelectActivity = (activity: PrimaryView) => {
+    if (activity === activeActivity) {
+      setIsLeftSidebarOpen(!isLeftSidebarOpen)
+    } else {
+      setActiveActivity(activity)
+      setIsLeftSidebarOpen(true)
+    }
 
-    if (view === 'chat' && !activeSessionId && sessionRecords[0]) {
+    if (activity === 'chat' && !activeSessionId && sessionRecords[0]) {
       setActiveSessionId(sessionRecords[0].id)
     }
   }
@@ -379,13 +432,14 @@ function App() {
       ...currentSessions,
     ])
     setActiveSessionId(sessionId)
-    setActiveView('chat')
+    setActiveActivity('chat')
     setErrorMessage(null)
+    setIsLeftSidebarOpen(true)
   }
 
   const handleSelectSession = (sessionId: string) => {
     setActiveSessionId(sessionId)
-    setActiveView('chat')
+    setActiveActivity('chat')
     setErrorMessage(null)
   }
 
@@ -497,89 +551,109 @@ function App() {
     })
   }
 
-  const inspectorTitle = activeView === 'chat' ? activeSession?.title ?? '新会话' : inspectorCopy[activeView].title
-  const inspectorDescription =
-    activeView === 'chat'
-      ? activeSession?.summary ?? inspectorCopy.chat.description
-      : inspectorCopy[activeView].description
+  const activeActivityTitle = activeActivity === 'chat' ? activeSession?.title ?? 'New Session' : moduleSidebarContent[activeActivity].title
 
   return (
-    <div className="app-shell">
-      <NavRail activeView={activeView} onSelectView={handleSelectView} />
+    <div className="workbench-shell">
+      <ActivityBar activeActivity={activeActivity} onSelectActivity={handleSelectActivity} />
 
-      <AppSidebar
-        activeView={activeView}
-        sessions={sessionRecords}
-        activeSessionId={activeSessionId}
-        onSelectSession={handleSelectSession}
-        onCreateSession={handleCreateSession}
-      />
-
-      <main className="main-stage">
-        {activeView === 'chat' ? (
+      <main className="workbench-main">
+        {isLeftSidebarOpen && (
           <>
-            <ChatHeader
-              title={activeSession?.title ?? '新会话'}
-              summary={activeSession?.summary ?? '输入任务目标，开始第一轮执行。'}
-              runState={runState}
-              statusText={statusLabel[runState]}
-              workMode={workMode}
-              onWorkModeChange={setWorkMode}
+            <PrimarySidebar
+              activeActivity={activeActivity}
+              sessions={sessionRecords}
+              activeSessionId={activeSessionId}
+              onSelectSession={handleSelectSession}
+              onCreateSession={handleCreateSession}
+              width={leftSidebarWidth}
             />
-
-            {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
-
-            {bashConfirmCommands ? (
-              <div className="bash-confirm-overlay">
-                <div className="bash-confirm-dialog">
-                  <h3 className="bash-confirm-dialog__title">确认执行 Shell 命令</h3>
-                  <p className="bash-confirm-dialog__desc">以下命令将在本地 shell 中执行：</p>
-                  <ul className="bash-confirm-dialog__list">
-                    {bashConfirmCommands.map((cmd, i) => (
-                      <li key={i}><code>{cmd}</code></li>
-                    ))}
-                  </ul>
-                  <div className="bash-confirm-dialog__actions">
-                    <button type="button" className="button button--ghost" onClick={handleBashCancel}>取消</button>
-                    <button type="button" className="button button--primary" onClick={handleBashConfirm}>确认执行</button>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-
-            <MessageTimeline ref={messageListRef} messages={messages} timeline={timeline} />
-
-            <PromptComposer
-              prompt={prompt}
-              workMode={workMode}
-              disabled={runState === 'running'}
-              canCancel={runState === 'running' && !!activeRunId}
-              onPromptChange={handlePromptChange}
-              onSubmit={handleSubmit}
-              onCancel={handleCancel}
+            <div 
+              className={`sidebar-resizer ${isResizingSidebar ? 'is-active' : ''}`} 
+              onMouseDown={() => setIsResizingSidebar(true)}
             />
           </>
-        ) : (
-          <ModulePage view={activeView} />
+        )}
+
+        <div className="workspace-center">
+          <section className="workspace-body">
+            {activeActivity === 'chat' ? (
+              <>
+                <ChatHeader
+                  title={activeSession?.title ?? 'New Session'}
+                  summary={activeSession?.summary ?? 'Provide mission goals to start.'}
+                  runState={runState}
+                  statusText={statusLabel[runState]}
+                  workMode={workMode}
+                  bridgeState={bridgeState}
+                  onWorkModeChange={setWorkMode}
+                />
+
+                {errorMessage ? <div className="error-banner">{errorMessage}</div> : null}
+
+                {bashConfirmCommands ? (
+                  <div className="bash-confirm-overlay">
+                    <div className="bash-confirm-dialog">
+                      <h3 className="bash-confirm-dialog__title">Confirm Shell Execution</h3>
+                      <p className="bash-confirm-dialog__desc">The following commands will run locally:</p>
+                      <ul className="bash-confirm-dialog__list">
+                        {bashConfirmCommands.map((cmd, i) => (
+                          <li key={i}><code>{cmd}</code></li>
+                        ))}
+                      </ul>
+                      <div className="bash-confirm-dialog__actions">
+                        <button type="button" className="button button--ghost" onClick={handleBashCancel}>Cancel</button>
+                        <button type="button" className="button button--primary" onClick={handleBashConfirm}>Execute</button>
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+
+                <MessageTimeline ref={messageListRef} messages={messages} timeline={timeline} />
+
+                <PromptComposer
+                  prompt={prompt}
+                  workMode={workMode}
+                  disabled={runState === 'running'}
+                  canCancel={runState === 'running' && !!activeRunId}
+                  onPromptChange={handlePromptChange}
+                  onSubmit={handleSubmit}
+                  onCancel={handleCancel}
+                />
+              </>
+            ) : (
+              <ModulePage view={activeActivity} />
+            )}
+          </section>
+
+          {isBottomPanelOpen && (
+            <>
+              <div 
+                className={`bottom-resizer ${isResizingBottom ? 'is-active' : ''}`} 
+                onMouseDown={() => setIsResizingBottom(true)}
+              />
+              <BottomPanel
+                activeTab={activeBottomTab}
+                onSelectTab={setActiveBottomTab}
+                onClose={() => setIsBottomPanelOpen(false)}
+                height={bottomPanelHeight}
+                planSteps={planStepsByView[activeActivity]}
+                logs={logs}
+                events={inspectorEvents}
+              />
+            </>
+          )}
+        </div>
+
+        {isAuxiliaryPanelOpen && (
+          <AuxiliarySidebar
+            activeTab={activeAuxiliaryTab}
+            onSelectTab={setActiveAuxiliaryTab}
+            onClose={() => setIsAuxiliaryPanelOpen(false)}
+            width={auxiliaryPanelWidth}
+          />
         )}
       </main>
-
-      <RightPanel
-        activeView={activeView}
-        activeTab={rightPanelTab}
-        description={inspectorDescription}
-        events={inspectorEvents}
-        isOpen={rightPanelOpen}
-        logs={logs}
-        onSelectTab={setRightPanelTab}
-        onToggle={setRightPanelOpen}
-        onWidthChange={setRightPanelWidth}
-        planSteps={planStepsByView[activeView]}
-        runState={runState}
-        statusText={statusLabel[runState]}
-        title={inspectorTitle}
-        width={rightPanelWidth}
-      />
     </div>
   )
 }
