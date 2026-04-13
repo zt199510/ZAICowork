@@ -222,3 +222,24 @@
   1. 继续 Phase 3 最后一项验收：验证 agent 崩溃恢复后的自动重连
   2. 仍保留 `apps/web/src/App.css` 既有 CSS warning 基线，不属于本次修复范围
 - Next First Step: 在 `npm run dev:electron` 下制造 agent 异常/退出，验证 `reconnecting -> ready` 恢复以及恢复后的再次运行
+
+---
+
+### [2026-04-13 17:30] Session Summary
+
+- Owner: Codex + 用户
+- Scope: Phase 3 验收第 3 项 — Electron 崩溃恢复 UI 回归闭环
+- Changes:
+  1. 新增 `apps/electron/scripts/verify-crash-recovery.cjs` 与根脚本 `npm run verify:electron:crash-recovery`，将 Electron 开发态崩溃恢复验收固化为可重复执行的回归脚本。
+  2. 新增 `apps/electron/src/renderer/verifyCrashRecovery.ts` 与 main 进程 dev-only 验证入口，由 Electron 自行驱动 renderer 完成冷启动、crash、恢复与恢复后工具回归检查。
+  3. 更新 `apps/web/src/hooks/useAgentRun.ts`：为 `bridge_error` 增加恢复到 `ready` 后的瞬态错误清理，避免崩溃恢复成功后旧错误 banner 残留。
+  4. 更新 `development-plan/current-status.md` 与 `development-plan/phase-3.md`，将 Phase 3 标记完成并切换下一个 Active Phase 到 Phase 4。
+- Verified:
+  1. `npm run verify:electron:crash-recovery` 通过：覆盖冷启动 ready、`reconnecting` 提示、恢复期间提交拦截、恢复后错误清理、以及 `read:` / `grep:` / `bash:` 三类工具回归。
+  2. `npm run lint` 通过
+  3. `npm run build:electron` 通过（保留既有 lucide-react `"use client"` bundling warning 基线）
+  4. `npm run build:agent` 通过
+- Open Items:
+  1. Active Phase 已切换到 Phase 4，下一步从 `@aiide/shared-protocol` 单元测试基线开始。
+  2. `apps/web/src/App.css` 既有 CSS warning 基线仍未处理，不属于本次范围。
+- Next First Step: 启动 Phase 4，先为 `@aiide/shared-protocol` 补齐协议层单元测试与 CI 验收入口

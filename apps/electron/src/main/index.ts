@@ -6,6 +6,8 @@ import { AgentBridge } from './agent-bridge'
 let mainWindow: BrowserWindow | null = null
 const agentBridge = new AgentBridge()
 const isDev = Boolean(process.env.ELECTRON_RENDERER_URL)
+const shouldVerifyCrashRecovery = process.env.AIIDE_VERIFY_CRASH_RECOVERY === '1'
+let hasStartedVerification = false
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -24,6 +26,14 @@ function createWindow(): void {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
+
+  if (shouldVerifyCrashRecovery) {
+    mainWindow.webContents.once('did-finish-load', () => {
+      if (hasStartedVerification) return
+      hasStartedVerification = true
+      void runCrashRecoveryVerification()
+    })
   }
 }
 
@@ -48,6 +58,34 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
+
+async function runCrashRecoveryVerification(): Promise<void> {
+  if (!mainWindow) {
+    console.error('[verify:crash-recovery] {"passed":false,"steps":[{"name":"window-missing","passed":false,"detail":"Main window was not created."}],"commands":[]}')
+    process.exitCode = 1
+    app.quit()
+    return
+  }
+
+  try {
+    const result = await mainWindow.webContents.executeJavaScript(
+      "import('/verifyCrashRecovery.ts').then(({ runCrashRecoveryVerification }) => runCrashRecoveryVerification())",
+      true,
+    )
+    console.log(`[verify:crash-recovery] ${JSON.stringify(result)}`)
+    process.exitCode = result?.passed ? 0 : 1
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.error(`[verify:crash-recovery] ${JSON.stringify({
+      passed: false,
+      steps: [{ name: 'execution-error', passed: false, detail: message }],
+      commands: [],
+    })}`)
+    process.exitCode = 1
+  } finally {
+    app.quit()
+  }
+}
 
 function registerIpcHandlers(): void {
   ipcMain.handle('agent:start-run', async (_event, request: { id: string; method: string; params: { runId: string; prompt: string; model: string; systemPrompt?: string } }) => {

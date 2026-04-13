@@ -8419,6 +8419,7 @@ function useAgentRun(updateSessionRecord) {
   const controllerRef = reactExports.useRef(null);
   const runSessionMapRef = reactExports.useRef(/* @__PURE__ */ new Map());
   const pendingRunRef = reactExports.useRef(null);
+  const clearErrorOnBridgeReadyRef = reactExports.useRef(false);
   const inspectorEvents = reactExports.useMemo(
     () => events.map((event, index) => ({
       id: `${event.runId}-${event.timestamp}-${event.type}-${index}`,
@@ -8440,7 +8441,8 @@ function useAgentRun(updateSessionRecord) {
     };
   }, []);
   reactExports.useEffect(() => {
-    if (bridgeState === "ready" && isBridgeStatusMessage(errorMessage)) {
+    if (bridgeState === "ready" && errorMessage && (isBridgeStatusMessage(errorMessage) || clearErrorOnBridgeReadyRef.current)) {
+      clearErrorOnBridgeReadyRef.current = false;
       setErrorMessage(null);
     }
   }, [bridgeState, errorMessage]);
@@ -8489,6 +8491,7 @@ function useAgentRun(updateSessionRecord) {
     switch (event.type) {
       case "run_started":
         setRunState("running");
+        clearErrorOnBridgeReadyRef.current = false;
         setErrorMessage(null);
         break;
       case "token_delta":
@@ -8503,6 +8506,7 @@ function useAgentRun(updateSessionRecord) {
         break;
       case "error":
         setRunState("failed");
+        clearErrorOnBridgeReadyRef.current = event.payload.code === "bridge_error";
         setErrorMessage(event.payload.message);
         appendAssistantFallback(event.runId, `运行失败：${event.payload.message}`);
         break;
@@ -8560,6 +8564,7 @@ function useAgentRun(updateSessionRecord) {
     setEvents([]);
     setLogs([]);
     setRunState("running");
+    clearErrorOnBridgeReadyRef.current = false;
     setErrorMessage(null);
     const controller = startAgentRun({
       prompt: trimmedPrompt,
@@ -8567,6 +8572,7 @@ function useAgentRun(updateSessionRecord) {
       onEvent: handleStreamEvent,
       onError: (message, failedRunId) => {
         setRunState("failed");
+        clearErrorOnBridgeReadyRef.current = isBridgeStatusMessage(message);
         setErrorMessage(message);
         if (failedRunId) {
           appendAssistantFallback(failedRunId, `运行失败：${message}`);
@@ -8614,6 +8620,7 @@ function useAgentRun(updateSessionRecord) {
     if (!trimmedPrompt || runState === "running") return;
     const bridgeUnavailableMessage = getBridgeUnavailableMessage(bridgeState);
     if (bridgeUnavailableMessage) {
+      clearErrorOnBridgeReadyRef.current = false;
       setErrorMessage(bridgeUnavailableMessage);
       return;
     }
@@ -8632,6 +8639,7 @@ function useAgentRun(updateSessionRecord) {
     if (!pending) return;
     const bridgeUnavailableMessage = getBridgeUnavailableMessage(bridgeState);
     if (bridgeUnavailableMessage) {
+      clearErrorOnBridgeReadyRef.current = false;
       setErrorMessage(bridgeUnavailableMessage);
       return;
     }
@@ -8644,13 +8652,16 @@ function useAgentRun(updateSessionRecord) {
   const handleCancel = () => {
     void controllerRef.current?.cancel().catch((error) => {
       setRunState("failed");
+      clearErrorOnBridgeReadyRef.current = false;
       setErrorMessage(error.message);
     });
   };
   const handleDebugCrash = () => {
     if (!activeRunId) return;
+    clearErrorOnBridgeReadyRef.current = false;
     setErrorMessage(null);
     void debugCrashElectronRun(activeRunId).catch((error) => {
+      clearErrorOnBridgeReadyRef.current = false;
       setErrorMessage(error.message);
     });
   };
@@ -8672,7 +8683,10 @@ function useAgentRun(updateSessionRecord) {
     handleBashCancel,
     handleCancel,
     handleDebugCrash,
-    clearError: () => setErrorMessage(null)
+    clearError: () => {
+      clearErrorOnBridgeReadyRef.current = false;
+      setErrorMessage(null);
+    }
   };
 }
 const WorkbenchContext = reactExports.createContext(null);

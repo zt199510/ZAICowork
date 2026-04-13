@@ -1,6 +1,6 @@
 # Phase 3
 
-- Status: in-progress
+- Status: completed
 
 ## Goal
 
@@ -30,6 +30,8 @@
 - Electron 运行态 UI 验证通过：通过实际 Electron 进程复用同一套 UI，`OUTPUT` / `TIMELINE` 与 Web 保持同类事件表现，`bash:` 确认流正常。
 - 新增 Electron 开发态 `debugCrashRun(runId)` 调试入口：renderer 可对活动 run 触发模拟崩溃，main 进程将其视作真实异常退出并进入恢复逻辑。
 - 通过定向 `AgentBridge` 验证脚本确认：长运行 `bash: Start-Sleep -Seconds 8` 被强制终止后，bridge 状态流为 `reconnecting -> ready`；恢复期间新的 `read:` 请求会被明确拒绝；恢复后 `read: package.json`、`grep: AgentBridge apps/electron`、`bash: Get-Location` 均再次成功完成。
+- 新增 `npm run verify:electron:crash-recovery` 回归脚本：在 Electron 开发态自动执行 `bash: Start-Sleep -Seconds 8` + `debugCrashRun(runId)`，验证冷启动 ready、`reconnecting` 提示、恢复期间提交拦截、恢复后错误 banner 自动清理，以及 `read:` / `grep:` / `bash:` 的 OUTPUT/TIMELINE 闭环。
+- renderer `useAgentRun` 补齐 `bridge_error` 的瞬态错误清理：当 bridge 从异常恢复到 `ready` 时，自动清掉恢复期间遗留的错误 banner，避免 UI 停留在过期失败状态。
 
 ## Batch 1 交付清单
 

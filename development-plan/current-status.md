@@ -1,8 +1,8 @@
 # Current Status
 
 - Updated At: 2026-04-13
-- Overall Progress: 96%
-- Active Phase: Phase 3
+- Overall Progress: 98%
+- Active Phase: Phase 4
 
 ## Completed Recently
 
@@ -24,15 +24,16 @@
 16. Electron workspace 新增 `run-electron-vite.cjs` 包装器，在 `dev/start` 启动前清理 `ELECTRON_RUN_AS_NODE`，解除 Electron 启动阻塞。
 17. 完成 Phase 3 验收第 1 项：Web 开发态与 Electron 运行态均验证通过统一日志链路、TIMELINE 事件类型、会话闭环与 bash 确认流。
 18. 完成 Phase 3 验收第 2 项：Electron main 进程新增开发态 crash 注入入口，bridge 在 agent 异常退出后会立即进入 `reconnecting` 并恢复到 `ready`；定向验证通过恢复期间拒绝新 run，且恢复后仍可继续执行 `read:` / `grep:` / `bash:`。
+19. 完成 Phase 3 验收第 3 项：新增 Electron 开发态崩溃恢复 UI 回归脚本，验证冷启动 ready、`reconnecting` 状态提示、恢复期间提交拦截、恢复后错误 banner 自动清理，以及 `read:` / `grep:` / `bash:` 三类工具在恢复后继续成功执行。
 
 ## In Progress
 
-1. Phase 3 验收：补齐崩溃恢复场景下的状态提示与结果回归，确认恢复后 Electron 端表现稳定。
+1. Phase 4 启动：补齐测试基线与质量验收入口。
 
 ## Next Actions
 
-1. Phase 3 验收：补齐崩溃恢复场景下的状态提示与结果回归，确认恢复后 Electron 端表现稳定。
-2. Phase 4：质量与开源就绪。
+1. Phase 4：为 `@aiide/shared-protocol` 补齐单元测试基线，并将 `lint/test/build` 纳入 CI 通过标准。
+2. Phase 4：设计 agent 集成测试与前端关键路径 E2E。
 
 ## Blockers
 

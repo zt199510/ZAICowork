@@ -6,6 +6,7 @@
   "main": "./out/main/index.js",
   "scripts": {
     "dev": "node ./scripts/run-electron-vite.cjs dev",
+    "verify:crash-recovery": "node ./scripts/verify-crash-recovery.cjs",
     "build": "electron-vite build",
     "start": "node ./scripts/run-electron-vite.cjs preview",
     "typecheck": "tsc --noEmit -p tsconfig.node.json"

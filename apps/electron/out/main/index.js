@@ -247,6 +247,8 @@ class AgentBridge {
 let mainWindow = null;
 const agentBridge = new AgentBridge();
 const isDev = Boolean(process.env.ELECTRON_RENDERER_URL);
+const shouldVerifyCrashRecovery = process.env.AIIDE_VERIFY_CRASH_RECOVERY === "1";
+let hasStartedVerification = false;
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
     width: 1280,
@@ -262,6 +264,13 @@ function createWindow() {
     mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
   } else {
     mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
+  }
+  if (shouldVerifyCrashRecovery) {
+    mainWindow.webContents.once("did-finish-load", () => {
+      if (hasStartedVerification) return;
+      hasStartedVerification = true;
+      void runCrashRecoveryVerification();
+    });
   }
 }
 electron.app.whenReady().then(() => {
@@ -282,6 +291,32 @@ electron.app.on("window-all-closed", () => {
     electron.app.quit();
   }
 });
+async function runCrashRecoveryVerification() {
+  if (!mainWindow) {
+    console.error('[verify:crash-recovery] {"passed":false,"steps":[{"name":"window-missing","passed":false,"detail":"Main window was not created."}],"commands":[]}');
+    process.exitCode = 1;
+    electron.app.quit();
+    return;
+  }
+  try {
+    const result = await mainWindow.webContents.executeJavaScript(
+      "import('/verifyCrashRecovery.ts').then(({ runCrashRecoveryVerification }) => runCrashRecoveryVerification())",
+      true
+    );
+    console.log(`[verify:crash-recovery] ${JSON.stringify(result)}`);
+    process.exitCode = result?.passed ? 0 : 1;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`[verify:crash-recovery] ${JSON.stringify({
+      passed: false,
+      steps: [{ name: "execution-error", passed: false, detail: message }],
+      commands: []
+    })}`);
+    process.exitCode = 1;
+  } finally {
+    electron.app.quit();
+  }
+}
 function registerIpcHandlers() {
   electron.ipcMain.handle("agent:start-run", async (_event, request) => {
     const { runId } = request.params;
