@@ -181,6 +181,27 @@
 
 ---
 
+### [2026-04-13 16:40] Session Summary
+
+- Owner: Codex + 用户
+- Scope: Phase 3 验收第 2 项 — agent 崩溃恢复、重连拦截与开发态故障注入
+- Changes:
+  1. 更新 `apps/electron/src/main/agent-bridge.ts`：首次非取消异常即进入 `reconnecting`，恢复期间拒绝新 run，并新增开发态 `debugCrashRun(runId)` 注入入口。
+  2. 更新 Electron main/preload IPC：仅开发态暴露 `window.agentApi.debugCrashRun`，renderer 可直接触发当前 run 的模拟崩溃。
+  3. 更新 renderer 运行控制：`useAgentRun` 按 bridge 状态拦截提交；`PromptComposer` 在 Electron 开发态且有活动 run 时显示 crash 按钮，并展示重连阻塞提示。
+  4. 同步更新 `current-status.md` 与 `phase-3.md`，将本次恢复验收结果写回计划文件。
+- Verified:
+  1. `npm run lint` 通过
+  2. `npm run build:electron` 通过（保留既有 lucide-react `"use client"` bundling warning 基线）
+  3. `npm run build:agent` 通过
+  4. 定向 `AgentBridge` 验证脚本通过：状态流为 `reconnecting -> ready -> reconnecting -> ready`，重连期间新请求被拒绝，恢复后 `read:` / `grep:` / `bash:` 再次执行成功
+- Open Items:
+  1. 继续 Phase 3 最后一项回归：在 `npm run dev:electron` 下完成崩溃恢复场景的 UI 状态提示与结果稳定性手测
+  2. `apps/web/src/App.css` 既有 CSS warning 基线仍未处理，不属于本次范围
+- Next First Step: 在 `npm run dev:electron` 下手工验证开发态 crash 按钮、`reconnecting` 提示、提交拦截和恢复后 UI 表现是否稳定
+
+---
+
 ### [2026-04-13 15:21] Session Summary
 
 - Owner: Codex + 用户

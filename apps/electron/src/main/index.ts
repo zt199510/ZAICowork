@@ -5,6 +5,7 @@ import { AgentBridge } from './agent-bridge'
 
 let mainWindow: BrowserWindow | null = null
 const agentBridge = new AgentBridge()
+const isDev = Boolean(process.env.ELECTRON_RENDERER_URL)
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -67,4 +68,11 @@ function registerIpcHandlers(): void {
   ipcMain.handle('agent:get-bridge-state', () => {
     return agentBridge.state
   })
+
+  if (isDev) {
+    ipcMain.handle('agent:debug-crash-run', async (_event, runId: string) => {
+      agentBridge.debugCrashRun(runId)
+      return { ok: true, runId }
+    })
+  }
 }

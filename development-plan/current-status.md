@@ -1,7 +1,7 @@
 # Current Status
 
 - Updated At: 2026-04-13
-- Overall Progress: 92%
+- Overall Progress: 96%
 - Active Phase: Phase 3
 
 ## Completed Recently
@@ -23,16 +23,16 @@
 15. Phase 3 Batch 3：统一日志链路（shared-protocol `log` 事件、Web/Electron bridge 与 agent 结构化日志、底部 OUTPUT 来源徽标）。
 16. Electron workspace 新增 `run-electron-vite.cjs` 包装器，在 `dev/start` 启动前清理 `ELECTRON_RUN_AS_NODE`，解除 Electron 启动阻塞。
 17. 完成 Phase 3 验收第 1 项：Web 开发态与 Electron 运行态均验证通过统一日志链路、TIMELINE 事件类型、会话闭环与 bash 确认流。
+18. 完成 Phase 3 验收第 2 项：Electron main 进程新增开发态 crash 注入入口，bridge 在 agent 异常退出后会立即进入 `reconnecting` 并恢复到 `ready`；定向验证通过恢复期间拒绝新 run，且恢复后仍可继续执行 `read:` / `grep:` / `bash:`。
 
 ## In Progress
 
-1. Phase 3 验收：确认 agent 崩溃恢复后可重连，且恢复后仍可继续运行会话。
+1. Phase 3 验收：补齐崩溃恢复场景下的状态提示与结果回归，确认恢复后 Electron 端表现稳定。
 
 ## Next Actions
 
-1. 在 `npm run dev:electron` 下触发 agent 异常/退出，验证 bridge 从 `reconnecting` 恢复到 `ready`，并确认恢复后仍可再次执行 `read:` / `grep:` / `bash:`。
-2. Phase 3 验收：补齐崩溃恢复场景下的状态提示与结果回归，确认恢复后 Electron 端表现稳定。
-3. Phase 4：质量与开源就绪。
+1. Phase 3 验收：补齐崩溃恢复场景下的状态提示与结果回归，确认恢复后 Electron 端表现稳定。
+2. Phase 4：质量与开源就绪。
 
 ## Blockers
 

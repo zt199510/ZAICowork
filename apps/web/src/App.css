@@ -1024,6 +1024,14 @@
   gap: 12px;
 }
 
+.composer__status {
+  line-height: 1.4;
+}
+
+.composer__status--warning {
+  color: var(--status-warning);
+}
+
 .composer textarea {
   width: 100%;
   min-height: 24px;
@@ -1046,6 +1054,12 @@
   justify-content: space-between;
   align-items: center;
   padding-top: 4px;
+}
+
+.composer__btn-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .button {
@@ -1079,6 +1093,17 @@
 .button--ghost:hover:not(:disabled) {
   background: var(--sidebar-hover);
   color: var(--foreground-strong);
+}
+
+.button--danger {
+  background: rgba(244, 67, 54, 0.12);
+  color: #ff8a80;
+  border: 1px solid rgba(244, 67, 54, 0.28);
+}
+
+.button--danger:hover:not(:disabled) {
+  background: rgba(244, 67, 54, 0.18);
+  color: #ffb4ad;
 }
 
 .button:disabled {

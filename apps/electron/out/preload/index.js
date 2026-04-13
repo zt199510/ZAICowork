@@ -1,5 +1,6 @@
 "use strict";
 const electron = require("electron");
+const isDev = Boolean(process.env.ELECTRON_RENDERER_URL);
 const agentApi = {
   startRun: (request) => electron.ipcRenderer.invoke("agent:start-run", request),
   cancelRun: (runId) => electron.ipcRenderer.invoke("agent:cancel-run", runId),
@@ -25,4 +26,7 @@ const agentApi = {
     };
   }
 };
+if (isDev) {
+  agentApi.debugCrashRun = (runId) => electron.ipcRenderer.invoke("agent:debug-crash-run", runId);
+}
 electron.contextBridge.exposeInMainWorld("agentApi", agentApi);

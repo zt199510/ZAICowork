@@ -9,8 +9,8 @@ class AgentBridge {
   _state = "idle";
   _consecutiveFailures = 0;
   _probeTimer;
+  _probeInFlight = false;
   _stateListeners = /* @__PURE__ */ new Set();
-  static MAX_FAILURES = 3;
   constructor() {
     void this.probeAndTransition();
   }
@@ -38,29 +38,45 @@ class AgentBridge {
     });
   }
   async probeAndTransition() {
+    if (this._probeInFlight) return;
+    this._probeInFlight = true;
     this.setState("reconnecting");
-    const available = await this.probe();
+    const available = await this.probe().catch(() => false);
+    this._probeInFlight = false;
     this.setState(available ? "ready" : "failed");
   }
   scheduleProbe() {
     if (this._probeTimer) return;
-    if (this._state === "reconnecting") return;
-    const delay = Math.min(1e3 * 2 ** (this._consecutiveFailures - 1), 1e4);
+    if (this._probeInFlight) return;
+    const delay = Math.min(1e3 * 2 ** Math.max(this._consecutiveFailures - 1, 0), 1e4);
     this._probeTimer = setTimeout(() => {
       this._probeTimer = void 0;
       void this.probeAndTransition();
     }, delay);
   }
-  recordRunFailure() {
+  recordRunFailure(run) {
+    if (run.failureRecorded) return;
+    run.failureRecorded = true;
     this._consecutiveFailures++;
-    if (this._consecutiveFailures >= AgentBridge.MAX_FAILURES) {
-      this.scheduleProbe();
-    }
+    this.setState("reconnecting");
+    this.scheduleProbe();
   }
   recordRunSuccess() {
     this._consecutiveFailures = 0;
     if (this._state !== "ready") {
       this.setState("ready");
+    }
+  }
+  getStartUnavailableMessage() {
+    switch (this._state) {
+      case "idle":
+        return "Agent bridge 正在初始化，请稍后重试。";
+      case "reconnecting":
+        return "Agent bridge 正在重连，请等待恢复后再试。";
+      case "failed":
+        return "Agent bridge 不可用，请检查 dotnet 环境后重试。";
+      default:
+        return "Agent bridge 当前不可用。";
     }
   }
   /** Resolve the monorepo root (two levels above apps/electron). */
@@ -107,19 +123,18 @@ class AgentBridge {
   }
   startRun(request, onEvent) {
     const { runId } = request.params;
-    if (this._state === "failed") {
-      onEvent(this.createErrorEvent(runId, "Agent bridge 不可用，请检查 dotnet 环境后重试。", false));
-      return;
+    if (this._state !== "ready") {
+      throw new Error(this.getStartUnavailableMessage());
     }
     const existing = this.runs.get(runId);
     if (existing?.child) {
-      onEvent(this.createErrorEvent(runId, "Run already started.", false));
-      return;
+      throw new Error("Run already started.");
     }
     const run = {
       runId,
       terminal: false,
       canceled: false,
+      failureRecorded: false,
       broadcast: (event) => {
         onEvent(event);
         if (this.isTerminalEvent(event)) {
@@ -156,7 +171,7 @@ class AgentBridge {
       if (run.terminal) return;
       run.broadcast(this.createLogEvent(runId, "bridge", "error", error.message));
       run.broadcast(this.createErrorEvent(runId, error.message, true));
-      this.recordRunFailure();
+      this.recordRunFailure(run);
     });
     child.on("exit", (code) => {
       run.child = void 0;
@@ -172,7 +187,7 @@ class AgentBridge {
         run.broadcast(
           this.createErrorEvent(runId, `Agent process exited with code ${code ?? "unknown"}.`, true)
         );
-        this.recordRunFailure();
+        this.recordRunFailure(run);
         return;
       }
       if (!run.terminal) {
@@ -180,7 +195,7 @@ class AgentBridge {
           this.createLogEvent(runId, "bridge", "error", "Agent process exited without a terminal event.")
         );
         run.broadcast(this.createErrorEvent(runId, "Agent process exited without a terminal event.", true));
-        this.recordRunFailure();
+        this.recordRunFailure(run);
         return;
       }
       this.recordRunSuccess();
@@ -189,6 +204,16 @@ class AgentBridge {
 `);
     child.stdin.end();
     run.broadcast(this.createLogEvent(runId, "bridge", "info", "Electron bridge forwarded agent.run to agent process."));
+  }
+  debugCrashRun(runId) {
+    const run = this.runs.get(runId);
+    if (!run?.child) {
+      throw new Error("No active agent process found for this run.");
+    }
+    run.broadcast(
+      this.createLogEvent(runId, "bridge", "warn", "Debug crash injection requested; terminating agent process.")
+    );
+    run.child.kill();
   }
   cancelRun(runId) {
     const run = this.runs.get(runId);
@@ -221,6 +246,7 @@ class AgentBridge {
 }
 let mainWindow = null;
 const agentBridge = new AgentBridge();
+const isDev = Boolean(process.env.ELECTRON_RENDERER_URL);
 function createWindow() {
   mainWindow = new electron.BrowserWindow({
     width: 1280,
@@ -271,4 +297,10 @@ function registerIpcHandlers() {
   electron.ipcMain.handle("agent:get-bridge-state", () => {
     return agentBridge.state;
   });
+  if (isDev) {
+    electron.ipcMain.handle("agent:debug-crash-run", async (_event, runId) => {
+      agentBridge.debugCrashRun(runId);
+      return { ok: true, runId };
+    });
+  }
 }

@@ -52,6 +52,7 @@ type ElectronAgentApi = {
   onRunEvent: (runId: string, callback: (event: StreamEvent) => void) => () => void
   getBridgeState: () => Promise<BridgeState>
   onBridgeStateChange: (callback: (state: BridgeState) => void) => () => void
+  debugCrashRun?: (runId: string) => Promise<{ ok: boolean; runId: string }>
 }
 
 declare global {
@@ -280,6 +281,18 @@ export function subscribeBridgeHealth(
   const api = window.agentApi
   void api.getBridgeState().then(onStateChange)
   return api.onBridgeStateChange(onStateChange)
+}
+
+export function canDebugCrashElectronRun(): boolean {
+  return import.meta.env.DEV && !!window.agentApi?.debugCrashRun
+}
+
+export async function debugCrashElectronRun(runId: string): Promise<void> {
+  const debugCrashRun = window.agentApi?.debugCrashRun
+  if (!debugCrashRun) {
+    throw new Error('仅 Electron 开发态支持模拟崩溃。')
+  }
+  await debugCrashRun(runId)
 }
 
 // ---------------------------------------------------------------------------

@@ -130,11 +130,15 @@ function App() {
                   <PromptComposer
                     prompt={sessions.prompt}
                     workMode={workMode}
-                    disabled={agentRun.runState === 'running'}
+                    inputDisabled={agentRun.runState === 'running'}
+                    submitDisabled={agentRun.runState === 'running' || !!agentRun.submitBlockedReason}
+                    submitBlockedReason={agentRun.submitBlockedReason}
                     canCancel={agentRun.runState === 'running' && !!agentRun.activeRunId}
+                    canDebugCrash={agentRun.canDebugCrash}
                     onPromptChange={sessions.handlePromptChange}
                     onSubmit={handleSubmit}
                     onCancel={agentRun.handleCancel}
+                    onDebugCrash={agentRun.handleDebugCrash}
                   />
                 </>
               ) : (

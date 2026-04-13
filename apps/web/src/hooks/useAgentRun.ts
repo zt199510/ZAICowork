@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { BridgeState, RunState, StreamEvent } from '@aiide/shared-protocol'
-import { startAgentRun, subscribeBridgeHealth, type AgentLogEntry, type AgentRunController } from '../lib/agentClient'
+import {
+  canDebugCrashElectronRun,
+  debugCrashElectronRun,
+  startAgentRun,
+  subscribeBridgeHealth,
+  type AgentLogEntry,
+  type AgentRunController,
+} from '../lib/agentClient'
 import type { EventPreview, ToolCallEntry } from '../types/workbench'
 import type { SessionRecord } from './useSessionManager'
 
@@ -12,6 +19,32 @@ export const statusLabel: Record<RunState, string> = {
   completed: '已完成',
   failed: '失败',
   canceled: '已取消',
+}
+
+const bridgeConnectingMessage = 'Agent bridge 正在初始化，请稍后重试。'
+const bridgeReconnectingMessage = 'Agent bridge 正在重连，请等待恢复后再试。'
+const bridgeFailedMessage = 'Agent bridge 不可用，请检查 dotnet 环境后重试。'
+
+function getBridgeUnavailableMessage(bridgeState: BridgeState | null): string | null {
+  if (!window.agentApi) return null
+
+  switch (bridgeState) {
+    case 'ready':
+      return null
+    case 'reconnecting':
+      return bridgeReconnectingMessage
+    case 'failed':
+      return bridgeFailedMessage
+    case 'idle':
+    default:
+      return bridgeConnectingMessage
+  }
+}
+
+function isBridgeStatusMessage(message: string | null): boolean {
+  return message === bridgeConnectingMessage ||
+    message === bridgeReconnectingMessage ||
+    message === bridgeFailedMessage
 }
 
 const eventSummary = (event: StreamEvent) => {
@@ -87,6 +120,12 @@ export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
     const unsubscribe = subscribeBridgeHealth(setBridgeState)
     return () => { unsubscribe?.() }
   }, [])
+
+  useEffect(() => {
+    if (bridgeState === 'ready' && isBridgeStatusMessage(errorMessage)) {
+      setErrorMessage(null)
+    }
+  }, [bridgeState, errorMessage])
 
   const appendLog = (entry: AgentLogEntry) => {
     setLogs((current) => [entry, ...current].slice(0, 24))
@@ -266,6 +305,12 @@ export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
     const trimmedPrompt = prompt.trim()
     if (!trimmedPrompt || runState === 'running') return
 
+    const bridgeUnavailableMessage = getBridgeUnavailableMessage(bridgeState)
+    if (bridgeUnavailableMessage) {
+      setErrorMessage(bridgeUnavailableMessage)
+      return
+    }
+
     const bashLines = trimmedPrompt
       .split('\n')
       .map((l) => l.trim())
@@ -285,9 +330,15 @@ export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
     setBashConfirmCommands(null)
     const pending = pendingRunRef.current
     pendingRunRef.current = null
-    if (pending) {
-      executeRun(pending.prompt, pending.sessionId)
+    if (!pending) return
+
+    const bridgeUnavailableMessage = getBridgeUnavailableMessage(bridgeState)
+    if (bridgeUnavailableMessage) {
+      setErrorMessage(bridgeUnavailableMessage)
+      return
     }
+
+    executeRun(pending.prompt, pending.sessionId)
   }
 
   const handleBashCancel = () => {
@@ -302,6 +353,21 @@ export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
     })
   }
 
+  const handleDebugCrash = () => {
+    if (!activeRunId) return
+
+    setErrorMessage(null)
+    void debugCrashElectronRun(activeRunId).catch((error: Error) => {
+      setErrorMessage(error.message)
+    })
+  }
+
+  const submitBlockedReason = getBridgeUnavailableMessage(bridgeState)
+  const canDebugCrash = import.meta.env.DEV &&
+    runState === 'running' &&
+    !!activeRunId &&
+    canDebugCrashElectronRun()
+
   return {
     events,
     logs,
@@ -311,10 +377,13 @@ export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
     bashConfirmCommands,
     bridgeState,
     inspectorEvents,
+    submitBlockedReason,
+    canDebugCrash,
     submitPrompt,
     handleBashConfirm,
     handleBashCancel,
     handleCancel,
+    handleDebugCrash,
     clearError: () => setErrorMessage(null),
   }
 }

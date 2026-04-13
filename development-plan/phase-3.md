@@ -20,7 +20,7 @@
 ## Acceptance
 
 - [x] Electron 下基础会话可运行
-- [ ] 崩溃恢复后可重连 agent
+- [x] 崩溃恢复后可重连 agent
 - [x] Web 与 Electron 事件表现一致
 
 ## Verification Notes
@@ -28,6 +28,8 @@
 - `apps/electron/scripts/run-electron-vite.cjs` 在启动 `electron-vite` 前清理 `ELECTRON_RUN_AS_NODE`，`npm run dev:electron` 与 `npm run start --workspace @aiide/electron` 在脏环境变量下 smoke 通过，不再出现 `app.whenReady` 为 `undefined` 的启动错误。
 - Web 开发态 UI 验证通过：`OUTPUT` 同时出现 `renderer` / `bridge` / `agent`，`TIMELINE` 包含 `run_started`、`tool_call_started`、`tool_call_completed`、`status`、`run_completed`，`bash: Get-Location` 会先弹确认框再完成执行。
 - Electron 运行态 UI 验证通过：通过实际 Electron 进程复用同一套 UI，`OUTPUT` / `TIMELINE` 与 Web 保持同类事件表现，`bash:` 确认流正常。
+- 新增 Electron 开发态 `debugCrashRun(runId)` 调试入口：renderer 可对活动 run 触发模拟崩溃，main 进程将其视作真实异常退出并进入恢复逻辑。
+- 通过定向 `AgentBridge` 验证脚本确认：长运行 `bash: Start-Sleep -Seconds 8` 被强制终止后，bridge 状态流为 `reconnecting -> ready`；恢复期间新的 `read:` 请求会被明确拒绝；恢复后 `read: package.json`、`grep: AgentBridge apps/electron`、`bash: Get-Location` 均再次成功完成。
 
 ## Batch 1 交付清单
 

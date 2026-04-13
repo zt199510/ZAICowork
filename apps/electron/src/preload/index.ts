@@ -23,7 +23,11 @@ export type AgentApi = {
   getBridgeState: () => Promise<BridgeState>
 
   onBridgeStateChange: (callback: (state: BridgeState) => void) => () => void
+
+  debugCrashRun?: (runId: string) => Promise<{ ok: boolean; runId: string }>
 }
+
+const isDev = Boolean(process.env.ELECTRON_RENDERER_URL)
 
 const agentApi: AgentApi = {
   startRun: (request) => ipcRenderer.invoke('agent:start-run', request),
@@ -53,6 +57,10 @@ const agentApi: AgentApi = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
+}
+
+if (isDev) {
+  agentApi.debugCrashRun = (runId) => ipcRenderer.invoke('agent:debug-crash-run', runId)
 }
 
 contextBridge.exposeInMainWorld('agentApi', agentApi)

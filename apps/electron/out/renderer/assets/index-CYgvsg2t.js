@@ -7089,7 +7089,7 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$k = [
+const __iconNode$l = [
   [
     "path",
     {
@@ -7098,14 +7098,14 @@ const __iconNode$k = [
     }
   ]
 ];
-const Activity = createLucideIcon("activity", __iconNode$k);
+const Activity = createLucideIcon("activity", __iconNode$l);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$j = [
+const __iconNode$k = [
   [
     "path",
     {
@@ -7115,14 +7115,14 @@ const __iconNode$j = [
   ],
   ["rect", { x: "14", y: "2", width: "8", height: "8", rx: "1", key: "88lufb" }]
 ];
-const Blocks = createLucideIcon("blocks", __iconNode$j);
+const Blocks = createLucideIcon("blocks", __iconNode$k);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$i = [
+const __iconNode$j = [
   ["path", { d: "M12 8V4H8", key: "hb8ula" }],
   ["rect", { width: "16", height: "12", x: "4", y: "8", rx: "2", key: "enze0r" }],
   ["path", { d: "M2 14h2", key: "vft8re" }],
@@ -7130,7 +7130,27 @@ const __iconNode$i = [
   ["path", { d: "M15 13v2", key: "1xurst" }],
   ["path", { d: "M9 13v2", key: "rq6x2g" }]
 ];
-const Bot = createLucideIcon("bot", __iconNode$i);
+const Bot = createLucideIcon("bot", __iconNode$j);
+/**
+ * @license lucide-react v1.8.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$i = [
+  ["path", { d: "M12 20v-9", key: "1qisl0" }],
+  ["path", { d: "M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z", key: "uouzyp" }],
+  ["path", { d: "M14.12 3.88 16 2", key: "qol33r" }],
+  ["path", { d: "M21 21a4 4 0 0 0-3.81-4", key: "1b0z45" }],
+  ["path", { d: "M21 5a4 4 0 0 1-3.55 3.97", key: "5cxbf6" }],
+  ["path", { d: "M22 13h-4", key: "1jl80f" }],
+  ["path", { d: "M3 21a4 4 0 0 1 3.81-4", key: "1fjd4g" }],
+  ["path", { d: "M3 5a4 4 0 0 0 3.55 3.97", key: "1d7oge" }],
+  ["path", { d: "M6 13H2", key: "82j7cp" }],
+  ["path", { d: "m8 2 1.88 1.88", key: "fmnt4t" }],
+  ["path", { d: "M9 7.13V6a3 3 0 1 1 6 0v1.13", key: "1vgav8" }]
+];
+const Bug = createLucideIcon("bug", __iconNode$i);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7507,11 +7527,15 @@ const modeHints = {
 function PromptComposer({
   prompt,
   workMode,
-  disabled,
+  inputDisabled,
+  submitDisabled,
+  submitBlockedReason,
   canCancel,
+  canDebugCrash,
   onPromptChange,
   onSubmit,
-  onCancel
+  onCancel,
+  onDebugCrash
 }) {
   const textareaRef = reactExports.useRef(null);
   reactExports.useEffect(() => {
@@ -7521,7 +7545,7 @@ function PromptComposer({
     }
   }, [prompt]);
   const handleKeyDown = (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+    if (!submitDisabled && (event.metaKey || event.ctrlKey) && event.key === "Enter") {
       event.preventDefault();
       onSubmit();
     }
@@ -7550,13 +7574,23 @@ function PromptComposer({
         onChange: (event) => onPromptChange(event.target.value),
         onKeyDown: handleKeyDown,
         placeholder: "给 ZAICowork 发送指令... (Ctrl+Enter 发送)",
-        disabled,
+        disabled: inputDisabled,
         rows: 1
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__actions", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "composer__meta" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__btn-group", style: { display: "flex", gap: "8px" }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "composer__meta", children: submitBlockedReason ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "composer__status composer__status--warning", children: submitBlockedReason }) : /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "composer__status", children: "Ctrl+Enter 发送" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__btn-group", children: [
+        canDebugCrash && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            className: "button button--danger",
+            onClick: onDebugCrash,
+            title: "仅开发态：模拟 agent 崩溃",
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(Bug, { size: 14 })
+          }
+        ),
         canCancel && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
@@ -7564,7 +7598,6 @@ function PromptComposer({
             className: "button button--ghost",
             onClick: onCancel,
             title: "取消执行",
-            style: { padding: "0 8px", height: "24px" },
             children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 })
           }
         ),
@@ -7574,10 +7607,9 @@ function PromptComposer({
             type: "button",
             className: "button button--primary",
             onClick: onSubmit,
-            disabled: !prompt.trim() || disabled,
+            disabled: !prompt.trim() || submitDisabled,
             title: "发送 (Ctrl+Enter)",
-            style: { padding: "0 8px", height: "24px", gap: "4px" },
-            children: disabled ? /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "执行中..." }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CornerDownLeft, { size: 14 }) })
+            children: inputDisabled ? /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "执行中..." }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CornerDownLeft, { size: 14 }) })
           }
         )
       ] })
@@ -8302,6 +8334,13 @@ function subscribeBridgeHealth(onStateChange) {
   void api.getBridgeState().then(onStateChange);
   return api.onBridgeStateChange(onStateChange);
 }
+async function debugCrashElectronRun(runId) {
+  const debugCrashRun = window.agentApi?.debugCrashRun;
+  if (!debugCrashRun) {
+    throw new Error("仅 Electron 开发态支持模拟崩溃。");
+  }
+  await debugCrashRun(runId);
+}
 function startAgentRun(options) {
   if (window.agentApi) {
     return startAgentRunElectron(options);
@@ -8315,6 +8354,26 @@ const statusLabel = {
   failed: "失败",
   canceled: "已取消"
 };
+const bridgeConnectingMessage = "Agent bridge 正在初始化，请稍后重试。";
+const bridgeReconnectingMessage = "Agent bridge 正在重连，请等待恢复后再试。";
+const bridgeFailedMessage = "Agent bridge 不可用，请检查 dotnet 环境后重试。";
+function getBridgeUnavailableMessage(bridgeState) {
+  if (!window.agentApi) return null;
+  switch (bridgeState) {
+    case "ready":
+      return null;
+    case "reconnecting":
+      return bridgeReconnectingMessage;
+    case "failed":
+      return bridgeFailedMessage;
+    case "idle":
+    default:
+      return bridgeConnectingMessage;
+  }
+}
+function isBridgeStatusMessage(message) {
+  return message === bridgeConnectingMessage || message === bridgeReconnectingMessage || message === bridgeFailedMessage;
+}
 const eventSummary = (event) => {
   switch (event.type) {
     case "run_started":
@@ -8380,6 +8439,11 @@ function useAgentRun(updateSessionRecord) {
       unsubscribe?.();
     };
   }, []);
+  reactExports.useEffect(() => {
+    if (bridgeState === "ready" && isBridgeStatusMessage(errorMessage)) {
+      setErrorMessage(null);
+    }
+  }, [bridgeState, errorMessage]);
   const appendLog = (entry) => {
     setLogs((current) => [entry, ...current].slice(0, 24));
   };
@@ -8548,6 +8612,11 @@ function useAgentRun(updateSessionRecord) {
     if (!sessionId) return;
     const trimmedPrompt = prompt.trim();
     if (!trimmedPrompt || runState === "running") return;
+    const bridgeUnavailableMessage = getBridgeUnavailableMessage(bridgeState);
+    if (bridgeUnavailableMessage) {
+      setErrorMessage(bridgeUnavailableMessage);
+      return;
+    }
     const bashLines = trimmedPrompt.split("\n").map((l2) => l2.trim()).filter((l2) => /^bash:/i.test(l2)).map((l2) => l2.replace(/^bash:\s*/i, ""));
     if (bashLines.length > 0) {
       pendingRunRef.current = { prompt: trimmedPrompt, sessionId };
@@ -8560,9 +8629,13 @@ function useAgentRun(updateSessionRecord) {
     setBashConfirmCommands(null);
     const pending = pendingRunRef.current;
     pendingRunRef.current = null;
-    if (pending) {
-      executeRun(pending.prompt, pending.sessionId);
+    if (!pending) return;
+    const bridgeUnavailableMessage = getBridgeUnavailableMessage(bridgeState);
+    if (bridgeUnavailableMessage) {
+      setErrorMessage(bridgeUnavailableMessage);
+      return;
     }
+    executeRun(pending.prompt, pending.sessionId);
   };
   const handleBashCancel = () => {
     setBashConfirmCommands(null);
@@ -8574,6 +8647,15 @@ function useAgentRun(updateSessionRecord) {
       setErrorMessage(error.message);
     });
   };
+  const handleDebugCrash = () => {
+    if (!activeRunId) return;
+    setErrorMessage(null);
+    void debugCrashElectronRun(activeRunId).catch((error) => {
+      setErrorMessage(error.message);
+    });
+  };
+  const submitBlockedReason = getBridgeUnavailableMessage(bridgeState);
+  const canDebugCrash = false;
   return {
     events,
     logs,
@@ -8583,10 +8665,13 @@ function useAgentRun(updateSessionRecord) {
     bashConfirmCommands,
     bridgeState,
     inspectorEvents,
+    submitBlockedReason,
+    canDebugCrash,
     submitPrompt,
     handleBashConfirm,
     handleBashCancel,
     handleCancel,
+    handleDebugCrash,
     clearError: () => setErrorMessage(null)
   };
 }
@@ -8687,11 +8772,15 @@ function App() {
             {
               prompt: sessions.prompt,
               workMode,
-              disabled: agentRun.runState === "running",
+              inputDisabled: agentRun.runState === "running",
+              submitDisabled: agentRun.runState === "running" || !!agentRun.submitBlockedReason,
+              submitBlockedReason: agentRun.submitBlockedReason,
               canCancel: agentRun.runState === "running" && !!agentRun.activeRunId,
+              canDebugCrash: agentRun.canDebugCrash,
               onPromptChange: sessions.handlePromptChange,
               onSubmit: handleSubmit,
-              onCancel: agentRun.handleCancel
+              onCancel: agentRun.handleCancel,
+              onDebugCrash: agentRun.handleDebugCrash
             }
           )
         ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(ModulePage, { view: layout.activeActivity }) }),
