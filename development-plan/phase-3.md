@@ -19,9 +19,15 @@
 
 ## Acceptance
 
-- [ ] Electron 下基础会话可运行
+- [x] Electron 下基础会话可运行
 - [ ] 崩溃恢复后可重连 agent
-- [ ] Web 与 Electron 事件表现一致
+- [x] Web 与 Electron 事件表现一致
+
+## Verification Notes
+
+- `apps/electron/scripts/run-electron-vite.cjs` 在启动 `electron-vite` 前清理 `ELECTRON_RUN_AS_NODE`，`npm run dev:electron` 与 `npm run start --workspace @aiide/electron` 在脏环境变量下 smoke 通过，不再出现 `app.whenReady` 为 `undefined` 的启动错误。
+- Web 开发态 UI 验证通过：`OUTPUT` 同时出现 `renderer` / `bridge` / `agent`，`TIMELINE` 包含 `run_started`、`tool_call_started`、`tool_call_completed`、`status`、`run_completed`，`bash: Get-Location` 会先弹确认框再完成执行。
+- Electron 运行态 UI 验证通过：通过实际 Electron 进程复用同一套 UI，`OUTPUT` / `TIMELINE` 与 Web 保持同类事件表现，`bash:` 确认流正常。
 
 ## Batch 1 交付清单
 

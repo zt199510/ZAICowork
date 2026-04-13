@@ -178,3 +178,26 @@
   2. 在 `npm run dev:electron` 下手工验证 Electron 端表现与 Web 一致，并继续完成 Phase 3 验收
   3. `apps/web/src/App.css` 仍存在既有语法警告，不属于本批次修复范围
 - Next First Step: 运行 `npm run dev` 与 `npm run dev:electron`，分别用 `read:` / `grep:` / `bash:` 验证统一日志链路和会话闭环
+
+---
+
+### [2026-04-13 15:21] Session Summary
+
+- Owner: Codex + 用户
+- Scope: Phase 3 验收第 1 项 — 解除 Electron 启动阻塞并完成会话/日志闭环验证
+- Changes:
+  1. 新增 `apps/electron/scripts/run-electron-vite.cjs`，在 Electron workspace 启动 `dev` / `start` 前清理 `ELECTRON_RUN_AS_NODE`
+  2. 更新 `apps/electron/package.json`，将 `dev` / `start` 改为通过包装器启动 `electron-vite`
+  3. 完成 Web 开发态与 Electron 运行态的 UI 验证：统一日志链路、TIMELINE 事件类型、会话闭环与 bash 确认流均通过
+- Verified:
+  1. `npm run lint` 通过
+  2. `npm run build` 通过（保留既有 CSS minify warning 基线）
+  3. `npm run build:electron` 通过
+  4. `npm run build:agent` 通过
+  5. `ELECTRON_RUN_AS_NODE=1` 下 `npm run dev:electron` 与 `npm run start --workspace @aiide/electron` smoke 通过，不再出现 `app.whenReady` 为 `undefined`
+  6. Web UI 自动化验证通过：`OUTPUT` 出现 `renderer` / `bridge` / `agent`，`TIMELINE` 包含 `RUN_STARTED` / `TOOL_CALL_*` / `STATUS` / `RUN_COMPLETED`
+  7. Electron UI 自动化验证通过：同样输入下日志来源、事件类型与 bash 确认流和 Web 保持一致
+- Open Items:
+  1. 继续 Phase 3 最后一项验收：验证 agent 崩溃恢复后的自动重连
+  2. 仍保留 `apps/web/src/App.css` 既有 CSS warning 基线，不属于本次修复范围
+- Next First Step: 在 `npm run dev:electron` 下制造 agent 异常/退出，验证 `reconnecting -> ready` 恢复以及恢复后的再次运行
