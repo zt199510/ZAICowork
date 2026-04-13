@@ -30,6 +30,8 @@ const eventSummary = (event: StreamEvent) => {
       return `${event.payload.toolName}: ${event.payload.inputSummary}`
     case 'tool_call_completed':
       return `${event.payload.toolName} ${event.payload.status}: ${event.payload.resultPreview} (${event.payload.durationMs}ms)`
+    case 'log':
+      return `[${event.payload.source}] ${event.payload.message}`
   }
 }
 
@@ -37,6 +39,16 @@ function summarizePrompt(prompt: string) {
   const normalized = prompt.replace(/\s+/g, ' ').trim()
   if (!normalized) return '新会话'
   return normalized.length > 22 ? `${normalized.slice(0, 22)}...` : normalized
+}
+
+function toLogEntry(event: Extract<StreamEvent, { type: 'log' }>): AgentLogEntry {
+  return {
+    id: crypto.randomUUID(),
+    source: event.payload.source,
+    level: event.payload.level,
+    message: event.payload.message,
+    timestamp: event.timestamp,
+  }
 }
 
 export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
@@ -146,6 +158,9 @@ export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
         setErrorMessage(event.payload.message)
         appendAssistantFallback(event.runId, `运行失败：${event.payload.message}`)
         break
+      case 'log':
+        appendLog(toLogEntry(event))
+        break
       case 'tool_call_started': {
         const { callId, toolName, inputSummary } = event.payload
         const sessionId = runSessionMapRef.current.get(event.runId)
@@ -189,6 +204,11 @@ export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
   }
 
   const executeRun = (trimmedPrompt: string, sessionId: string) => {
+    setEvents([])
+    setLogs([])
+    setRunState('running')
+    setErrorMessage(null)
+
     const controller = startAgentRun({
       prompt: trimmedPrompt,
       model: 'gpt-5.4',
@@ -206,10 +226,6 @@ export function useAgentRun(updateSessionRecord: UpdateSessionRecordFn) {
     runSessionMapRef.current.set(controller.runId, sessionId)
     controllerRef.current = controller
     setActiveRunId(controller.runId)
-    setRunState('running')
-    setErrorMessage(null)
-    setEvents([])
-    setLogs([])
 
     updateSessionRecord(sessionId, (session) => ({
       ...session,

@@ -6,11 +6,16 @@ export type ToolName = 'read' | 'grep' | 'bash'
 
 export type ToolCallStatus = 'running' | 'completed' | 'failed'
 
+export type LogLevel = 'info' | 'warn' | 'error'
+
+export type LogSource = 'renderer' | 'bridge' | 'agent'
+
 export type StreamEventType =
   | 'run_started'
   | 'token_delta'
   | 'tool_call_started'
   | 'tool_call_completed'
+  | 'log'
   | 'status'
   | 'run_completed'
   | 'error'
@@ -61,6 +66,12 @@ export interface ToolCallCompletedPayload {
   retryHint?: string
 }
 
+export interface LogPayload {
+  source: LogSource
+  level: LogLevel
+  message: string
+}
+
 export interface StatusPayload {
   state: RunState
   message: string
@@ -77,6 +88,7 @@ export type StreamEvent =
   | EventEnvelope<'token_delta', TokenDeltaPayload>
   | EventEnvelope<'tool_call_started', ToolCallStartedPayload>
   | EventEnvelope<'tool_call_completed', ToolCallCompletedPayload>
+  | EventEnvelope<'log', LogPayload>
   | EventEnvelope<'status', StatusPayload>
   | EventEnvelope<'run_completed', { outputSummary: string }>
   | EventEnvelope<'error', ErrorPayload>

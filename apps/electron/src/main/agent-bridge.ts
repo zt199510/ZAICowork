@@ -1,8 +1,13 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
 import { createInterface } from 'node:readline'
-import { fileURLToPath } from 'node:url'
 import { resolve } from 'node:path'
-import type { AgentRpcEvent, BridgeState, StreamEvent } from '@aiide/shared-protocol'
+import type {
+  AgentRpcEvent,
+  BridgeState,
+  LogLevel,
+  LogSource,
+  StreamEvent,
+} from '@aiide/shared-protocol'
 
 type RunRecord = {
   runId: string
@@ -96,11 +101,7 @@ export class AgentBridge {
     return resolve(this.monorepoRoot, 'services/agent-dotnet/src/AIIde.Agent/AIIde.Agent.csproj')
   }
 
-  private createStatusEvent(
-    runId: string,
-    state: 'running' | 'completed' | 'failed' | 'canceled',
-    message: string,
-  ): StreamEvent {
+  private createStatusEvent(runId: string, state: 'canceled', message: string): StreamEvent {
     return {
       type: 'status',
       runId,
@@ -115,6 +116,20 @@ export class AgentBridge {
       runId,
       timestamp: new Date().toISOString(),
       payload: { code: 'bridge_error', message, retriable },
+    }
+  }
+
+  private createLogEvent(
+    runId: string,
+    source: LogSource,
+    level: LogLevel,
+    message: string,
+  ): StreamEvent {
+    return {
+      type: 'log',
+      runId,
+      timestamp: new Date().toISOString(),
+      payload: { source, level, message },
     }
   }
 
@@ -168,14 +183,14 @@ export class AgentBridge {
 
     this.runs.set(runId, run)
 
-    run.broadcast(this.createStatusEvent(runId, 'running', 'Electron main started agent process.'))
-
     const child = spawn('dotnet', ['run', '--project', this.agentProjectPath], {
       stdio: ['pipe', 'pipe', 'pipe'],
       cwd: this.monorepoRoot,
     })
 
     run.child = child
+    run.broadcast(this.createLogEvent(runId, 'bridge', 'info', 'Electron bridge received agent.run request.'))
+    run.broadcast(this.createLogEvent(runId, 'bridge', 'info', 'Electron bridge started agent process.'))
 
     const stdout = createInterface({ input: child.stdout })
     const stderr = createInterface({ input: child.stderr })
@@ -186,17 +201,19 @@ export class AgentBridge {
         const rpcEvent = JSON.parse(line) as AgentRpcEvent
         run.broadcast(rpcEvent.params)
       } catch {
+        run.broadcast(this.createLogEvent(runId, 'bridge', 'error', 'Failed to parse agent stdout event.'))
         run.broadcast(this.createErrorEvent(runId, 'Failed to parse agent stdout event.', false))
       }
     })
 
     stderr.on('line', (line: string) => {
       if (!line.trim() || run.terminal) return
-      run.broadcast(this.createStatusEvent(runId, 'running', `agent stderr: ${line}`))
+      run.broadcast(this.createLogEvent(runId, 'agent', 'warn', `stderr: ${line}`))
     })
 
     child.on('error', (error: Error) => {
       if (run.terminal) return
+      run.broadcast(this.createLogEvent(runId, 'bridge', 'error', error.message))
       run.broadcast(this.createErrorEvent(runId, error.message, true))
       this.recordRunFailure()
     })
@@ -212,6 +229,9 @@ export class AgentBridge {
 
       if (!run.terminal && code !== 0) {
         run.broadcast(
+          this.createLogEvent(runId, 'bridge', 'error', `Agent process exited with code ${code ?? 'unknown'}.`),
+        )
+        run.broadcast(
           this.createErrorEvent(runId, `Agent process exited with code ${code ?? 'unknown'}.`, true),
         )
         this.recordRunFailure()
@@ -219,15 +239,20 @@ export class AgentBridge {
       }
 
       if (!run.terminal) {
-        run.broadcast(this.createStatusEvent(runId, 'completed', 'Agent process exited cleanly.'))
-        run.terminal = true
-        this.scheduleCleanup(run)
-        this.recordRunSuccess()
+        run.broadcast(
+          this.createLogEvent(runId, 'bridge', 'error', 'Agent process exited without a terminal event.'),
+        )
+        run.broadcast(this.createErrorEvent(runId, 'Agent process exited without a terminal event.', true))
+        this.recordRunFailure()
+        return
       }
+
+      this.recordRunSuccess()
     })
 
     child.stdin.write(`${JSON.stringify(request)}\n`)
     child.stdin.end()
+    run.broadcast(this.createLogEvent(runId, 'bridge', 'info', 'Electron bridge forwarded agent.run to agent process.'))
   }
 
   cancelRun(runId: string): void {
@@ -235,6 +260,10 @@ export class AgentBridge {
     if (!run) return
 
     run.canceled = true
+
+    if (!run.terminal) {
+      run.broadcast(this.createLogEvent(runId, 'bridge', 'info', 'Cancel requested; terminating agent process.'))
+    }
 
     if (!run.terminal) {
       run.broadcast(this.createStatusEvent(runId, 'canceled', 'Run canceled by user.'))

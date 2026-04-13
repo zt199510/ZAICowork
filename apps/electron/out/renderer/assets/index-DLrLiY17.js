@@ -7089,7 +7089,7 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$h = [
+const __iconNode$k = [
   [
     "path",
     {
@@ -7098,14 +7098,14 @@ const __iconNode$h = [
     }
   ]
 ];
-const Activity = createLucideIcon("activity", __iconNode$h);
+const Activity = createLucideIcon("activity", __iconNode$k);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$g = [
+const __iconNode$j = [
   [
     "path",
     {
@@ -7115,14 +7115,29 @@ const __iconNode$g = [
   ],
   ["rect", { x: "14", y: "2", width: "8", height: "8", rx: "1", key: "88lufb" }]
 ];
-const Blocks = createLucideIcon("blocks", __iconNode$g);
+const Blocks = createLucideIcon("blocks", __iconNode$j);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$f = [
+const __iconNode$i = [
+  ["path", { d: "M12 8V4H8", key: "hb8ula" }],
+  ["rect", { width: "16", height: "12", x: "4", y: "8", rx: "2", key: "enze0r" }],
+  ["path", { d: "M2 14h2", key: "vft8re" }],
+  ["path", { d: "M20 14h2", key: "4cs60a" }],
+  ["path", { d: "M15 13v2", key: "1xurst" }],
+  ["path", { d: "M9 13v2", key: "rq6x2g" }]
+];
+const Bot = createLucideIcon("bot", __iconNode$i);
+/**
+ * @license lucide-react v1.8.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$h = [
   ["path", { d: "M8 2v4", key: "1cmpym" }],
   ["path", { d: "M16 2v4", key: "4m81vk" }],
   ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
@@ -7134,7 +7149,29 @@ const __iconNode$f = [
   ["path", { d: "M12 18h.01", key: "mhygvu" }],
   ["path", { d: "M16 18h.01", key: "kzsmim" }]
 ];
-const CalendarDays = createLucideIcon("calendar-days", __iconNode$f);
+const CalendarDays = createLucideIcon("calendar-days", __iconNode$h);
+/**
+ * @license lucide-react v1.8.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$g = [
+  ["path", { d: "m16 18 6-6-6-6", key: "eg8j8" }],
+  ["path", { d: "m8 6-6 6 6 6", key: "ppft3o" }]
+];
+const Code = createLucideIcon("code", __iconNode$g);
+/**
+ * @license lucide-react v1.8.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$f = [
+  ["path", { d: "M20 4v7a4 4 0 0 1-4 4H4", key: "6o5b7l" }],
+  ["path", { d: "m9 10-5 5 5 5", key: "1kshq7" }]
+];
+const CornerDownLeft = createLucideIcon("corner-down-left", __iconNode$f);
 /**
  * @license lucide-react v1.8.0 - ISC
  *
@@ -7462,10 +7499,10 @@ const MessageTimeline = reactExports.forwardRef(
   }
 );
 const modeHints = {
-  clarify: "适合先拆需求和边界，再进入执行。",
-  cowork: "适合连续多轮协作与回合式推进。",
-  code: "适合直接做代码、验证和回填结果。",
-  acp: "适合严谨执行、审批和较强过程约束。"
+  clarify: "澄清模式: 先拆需求和边界",
+  cowork: "协作模式: 连续多轮推演",
+  code: "编码模式: 代码生成与验证",
+  acp: "ACP模式: 严谨执行与审批"
 };
 function PromptComposer({
   prompt,
@@ -7476,6 +7513,13 @@ function PromptComposer({
   onSubmit,
   onCancel
 }) {
+  const textareaRef = reactExports.useRef(null);
+  reactExports.useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 300)}px`;
+    }
+  }, [prompt]);
   const handleKeyDown = (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
       event.preventDefault();
@@ -7483,26 +7527,47 @@ function PromptComposer({
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx("footer", { className: "composer", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__shell", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "composer__header", children: /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "prompt", className: "composer__label", children: workMode === "code" ? "Code Editor" : "Chat" }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "composer__header", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: "prompt", className: "composer__label", children: [
+      workMode === "code" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Code, { size: 14, className: "icon-code" }),
+        " Code Editor"
+      ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Bot, { size: 14, className: "icon-chat" }),
+        " Chat"
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "mode-hint-inline", children: [
+        "· ",
+        modeHints[workMode]
+      ] })
+    ] }) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(
       "textarea",
       {
+        ref: textareaRef,
         id: "prompt",
         className: "composer textarea",
         value: prompt,
         onChange: (event) => onPromptChange(event.target.value),
         onKeyDown: handleKeyDown,
-        placeholder: "输入您的指令...",
-        disabled
+        placeholder: "给 ZAICowork 发送指令... (Ctrl+Enter 发送)",
+        disabled,
+        rows: 1
       }
     ),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__actions", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__meta", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: modeHints[workMode] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Ctrl + Enter 发送" })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__btn-group", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "button button--ghost", onClick: onCancel, disabled: !canCancel, children: "取消" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "composer__meta" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "composer__btn-group", style: { display: "flex", gap: "8px" }, children: [
+        canCancel && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          "button",
+          {
+            type: "button",
+            className: "button button--ghost",
+            onClick: onCancel,
+            title: "取消执行",
+            style: { padding: "0 8px", height: "24px" },
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(X, { size: 14 })
+          }
+        ),
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
@@ -7510,7 +7575,9 @@ function PromptComposer({
             className: "button button--primary",
             onClick: onSubmit,
             disabled: !prompt.trim() || disabled,
-            children: disabled ? "执行中..." : "开始执行"
+            title: "发送 (Ctrl+Enter)",
+            style: { padding: "0 8px", height: "24px", gap: "4px" },
+            children: disabled ? /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: "执行中..." }) : /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(CornerDownLeft, { size: 14 }) })
           }
         )
       ] })
@@ -7674,6 +7741,11 @@ const tabs$1 = [
   { value: "logs", label: "OUTPUT", icon: Logs },
   { value: "events", label: "TIMELINE", icon: Activity }
 ];
+const logSourceLabel = {
+  renderer: "renderer",
+  bridge: "bridge",
+  agent: "agent"
+};
 function BottomPanel({
   activeTab,
   onSelectTab,
@@ -7691,10 +7763,13 @@ function BottomPanel({
         return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bottom-panel__content-scroll bottom-panel__logs", children: [
           logs.length === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "panel-empty", children: "No output yet..." }) : null,
           logs.map((log) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `log-entry log-entry--${log.level}`, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "log-entry__time", children: [
-              "[",
-              new Date(log.timestamp).toLocaleTimeString(),
-              "]"
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "log-entry__meta", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "log-entry__time", children: [
+                "[",
+                new Date(log.timestamp).toLocaleTimeString(),
+                "]"
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: `log-entry__source log-entry__source--${log.source}`, children: logSourceLabel[log.source] })
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "log-entry__message", children: log.message })
           ] }, log.id))
@@ -8052,30 +8127,13 @@ function useSessionManager() {
     handlePromptChange
   };
 }
-const createLogEntry = (message, level = "info") => ({
+const createLogEntry = (message, level = "info", source = "renderer") => ({
   id: crypto.randomUUID(),
+  source,
   level,
   message,
   timestamp: (/* @__PURE__ */ new Date()).toISOString()
 });
-const summarizeEvent = (event) => {
-  switch (event.type) {
-    case "run_started":
-      return `run_started: model=${event.payload.model}`;
-    case "token_delta":
-      return `token_delta: ${event.payload.text}`;
-    case "status":
-      return `status: ${event.payload.state} - ${event.payload.message}`;
-    case "run_completed":
-      return `run_completed: ${event.payload.outputSummary}`;
-    case "error":
-      return `error: ${event.payload.message}`;
-    case "tool_call_started":
-      return `tool_call_started: ${event.payload.toolName} — ${event.payload.inputSummary}`;
-    case "tool_call_completed":
-      return `tool_call_completed: ${event.payload.toolName} ${event.payload.status} — ${event.payload.resultPreview}`;
-  }
-};
 function isTerminalEvent(event) {
   return event.type === "run_completed" || event.type === "error" || event.type === "status" && (event.payload.state === "canceled" || event.payload.state === "failed");
 }
@@ -8112,7 +8170,6 @@ function startAgentRunWeb(options) {
     try {
       const event = JSON.parse(messageEvent.data);
       options.onEvent(event);
-      log(summarizeEvent(event), event.type === "error" ? "error" : "info");
       if (isTerminalEvent(event)) {
         finish();
       }
@@ -8201,11 +8258,11 @@ function startAgentRunElectron(options) {
   };
   unsubscribe = api.onRunEvent(runId, (event) => {
     options.onEvent(event);
-    log(summarizeEvent(event), event.type === "error" ? "error" : "info");
     if (isTerminalEvent(event)) {
       finish();
     }
   });
+  log("已建立 IPC 运行事件订阅。");
   const request = {
     id: requestId,
     method: "agent.run",
@@ -8274,12 +8331,23 @@ const eventSummary = (event) => {
       return `${event.payload.toolName}: ${event.payload.inputSummary}`;
     case "tool_call_completed":
       return `${event.payload.toolName} ${event.payload.status}: ${event.payload.resultPreview} (${event.payload.durationMs}ms)`;
+    case "log":
+      return `[${event.payload.source}] ${event.payload.message}`;
   }
 };
 function summarizePrompt(prompt) {
   const normalized = prompt.replace(/\s+/g, " ").trim();
   if (!normalized) return "新会话";
   return normalized.length > 22 ? `${normalized.slice(0, 22)}...` : normalized;
+}
+function toLogEntry(event) {
+  return {
+    id: crypto.randomUUID(),
+    source: event.payload.source,
+    level: event.payload.level,
+    message: event.payload.message,
+    timestamp: event.timestamp
+  };
 }
 function useAgentRun(updateSessionRecord) {
   const [events, setEvents] = reactExports.useState([]);
@@ -8374,6 +8442,9 @@ function useAgentRun(updateSessionRecord) {
         setErrorMessage(event.payload.message);
         appendAssistantFallback(event.runId, `运行失败：${event.payload.message}`);
         break;
+      case "log":
+        appendLog(toLogEntry(event));
+        break;
       case "tool_call_started": {
         const { callId, toolName, inputSummary } = event.payload;
         const sessionId = runSessionMapRef.current.get(event.runId);
@@ -8422,6 +8493,10 @@ function useAgentRun(updateSessionRecord) {
     }
   };
   const executeRun = (trimmedPrompt, sessionId) => {
+    setEvents([]);
+    setLogs([]);
+    setRunState("running");
+    setErrorMessage(null);
     const controller = startAgentRun({
       prompt: trimmedPrompt,
       model: "gpt-5.4",
@@ -8438,10 +8513,6 @@ function useAgentRun(updateSessionRecord) {
     runSessionMapRef.current.set(controller.runId, sessionId);
     controllerRef.current = controller;
     setActiveRunId(controller.runId);
-    setRunState("running");
-    setErrorMessage(null);
-    setEvents([]);
-    setLogs([]);
     updateSessionRecord(sessionId, (session) => ({
       ...session,
       title: session.title === "新会话" ? summarizePrompt(trimmedPrompt) : session.title,

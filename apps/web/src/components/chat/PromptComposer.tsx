@@ -1,5 +1,6 @@
-import type { KeyboardEvent } from 'react'
+import { type KeyboardEvent, useRef, useEffect } from 'react'
 import type { WorkMode } from '../../types/workbench'
+import { CornerDownLeft, X, Bot, Code } from 'lucide-react'
 
 type PromptComposerProps = {
   prompt: string
@@ -12,10 +13,10 @@ type PromptComposerProps = {
 }
 
 const modeHints: Record<WorkMode, string> = {
-  clarify: '适合先拆需求和边界，再进入执行。',
-  cowork: '适合连续多轮协作与回合式推进。',
-  code: '适合直接做代码、验证和回填结果。',
-  acp: '适合严谨执行、审批和较强过程约束。',
+  clarify: '澄清模式: 先拆需求和边界',
+  cowork: '协作模式: 连续多轮推演',
+  code: '编码模式: 代码生成与验证',
+  acp: 'ACP模式: 严谨执行与审批',
 }
 
 export function PromptComposer({
@@ -27,6 +28,16 @@ export function PromptComposer({
   onSubmit,
   onCancel,
 }: PromptComposerProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Auto-resize textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 300)}px`
+    }
+  }, [prompt])
+
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
       event.preventDefault()
@@ -39,36 +50,56 @@ export function PromptComposer({
       <div className="composer__shell">
         <div className="composer__header">
           <label htmlFor="prompt" className="composer__label">
-            {workMode === 'code' ? 'Code Editor' : 'Chat'}
+            {workMode === 'code' ? (
+              <><Code size={14} className="icon-code" /> Code Editor</>
+            ) : (
+              <><Bot size={14} className="icon-chat" /> Chat</>
+            )}
+            <span className="mode-hint-inline">· {modeHints[workMode]}</span>
           </label>
         </div>
 
         <textarea
+          ref={textareaRef}
           id="prompt"
           className="composer textarea"
           value={prompt}
           onChange={(event) => onPromptChange(event.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="输入您的指令..."
+          placeholder="给 ZAICowork 发送指令... (Ctrl+Enter 发送)"
           disabled={disabled}
+          rows={1}
         />
 
         <div className="composer__actions">
           <div className="composer__meta">
-            <span>{modeHints[workMode]}</span>
-            <span>Ctrl + Enter 发送</span>
+            {/* Space left for additional tools like Attach, Mentions, etc */}
           </div>
-          <div className="composer__btn-group">
-            <button type="button" className="button button--ghost" onClick={onCancel} disabled={!canCancel}>
-              取消
-            </button>
+          <div className="composer__btn-group" style={{ display: 'flex', gap: '8px' }}>
+            {canCancel && (
+              <button 
+                type="button" 
+                className="button button--ghost" 
+                onClick={onCancel} 
+                title="取消执行"
+                style={{ padding: '0 8px', height: '24px' }}
+              >
+                <X size={14} />
+              </button>
+            )}
             <button
               type="button"
               className="button button--primary"
               onClick={onSubmit}
               disabled={!prompt.trim() || disabled}
+              title="发送 (Ctrl+Enter)"
+              style={{ padding: '0 8px', height: '24px', gap: '4px' }}
             >
-              {disabled ? '执行中...' : '开始执行'}
+              {disabled ? (
+                <>执行中...</>
+              ) : (
+                <><CornerDownLeft size={14} /></>
+              )}
             </button>
           </div>
         </div>

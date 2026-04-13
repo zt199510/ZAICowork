@@ -86,6 +86,14 @@ class AgentBridge {
       payload: { code: "bridge_error", message, retriable }
     };
   }
+  createLogEvent(runId, source, level, message) {
+    return {
+      type: "log",
+      runId,
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      payload: { source, level, message }
+    };
+  }
   isTerminalEvent(event) {
     return event.type === "run_completed" || event.type === "error" || event.type === "status" && (event.payload.state === "canceled" || event.payload.state === "failed");
   }
@@ -121,12 +129,13 @@ class AgentBridge {
       }
     };
     this.runs.set(runId, run);
-    run.broadcast(this.createStatusEvent(runId, "running", "Electron main started agent process."));
     const child = node_child_process.spawn("dotnet", ["run", "--project", this.agentProjectPath], {
       stdio: ["pipe", "pipe", "pipe"],
       cwd: this.monorepoRoot
     });
     run.child = child;
+    run.broadcast(this.createLogEvent(runId, "bridge", "info", "Electron bridge received agent.run request."));
+    run.broadcast(this.createLogEvent(runId, "bridge", "info", "Electron bridge started agent process."));
     const stdout = node_readline.createInterface({ input: child.stdout });
     const stderr = node_readline.createInterface({ input: child.stderr });
     stdout.on("line", (line) => {
@@ -135,15 +144,17 @@ class AgentBridge {
         const rpcEvent = JSON.parse(line);
         run.broadcast(rpcEvent.params);
       } catch {
+        run.broadcast(this.createLogEvent(runId, "bridge", "error", "Failed to parse agent stdout event."));
         run.broadcast(this.createErrorEvent(runId, "Failed to parse agent stdout event.", false));
       }
     });
     stderr.on("line", (line) => {
       if (!line.trim() || run.terminal) return;
-      run.broadcast(this.createStatusEvent(runId, "running", `agent stderr: ${line}`));
+      run.broadcast(this.createLogEvent(runId, "agent", "warn", `stderr: ${line}`));
     });
     child.on("error", (error) => {
       if (run.terminal) return;
+      run.broadcast(this.createLogEvent(runId, "bridge", "error", error.message));
       run.broadcast(this.createErrorEvent(runId, error.message, true));
       this.recordRunFailure();
     });
@@ -156,26 +167,36 @@ class AgentBridge {
       }
       if (!run.terminal && code !== 0) {
         run.broadcast(
+          this.createLogEvent(runId, "bridge", "error", `Agent process exited with code ${code ?? "unknown"}.`)
+        );
+        run.broadcast(
           this.createErrorEvent(runId, `Agent process exited with code ${code ?? "unknown"}.`, true)
         );
         this.recordRunFailure();
         return;
       }
       if (!run.terminal) {
-        run.broadcast(this.createStatusEvent(runId, "completed", "Agent process exited cleanly."));
-        run.terminal = true;
-        this.scheduleCleanup(run);
-        this.recordRunSuccess();
+        run.broadcast(
+          this.createLogEvent(runId, "bridge", "error", "Agent process exited without a terminal event.")
+        );
+        run.broadcast(this.createErrorEvent(runId, "Agent process exited without a terminal event.", true));
+        this.recordRunFailure();
+        return;
       }
+      this.recordRunSuccess();
     });
     child.stdin.write(`${JSON.stringify(request)}
 `);
     child.stdin.end();
+    run.broadcast(this.createLogEvent(runId, "bridge", "info", "Electron bridge forwarded agent.run to agent process."));
   }
   cancelRun(runId) {
     const run = this.runs.get(runId);
     if (!run) return;
     run.canceled = true;
+    if (!run.terminal) {
+      run.broadcast(this.createLogEvent(runId, "bridge", "info", "Cancel requested; terminating agent process."));
+    }
     if (!run.terminal) {
       run.broadcast(this.createStatusEvent(runId, "canceled", "Run canceled by user."));
     }

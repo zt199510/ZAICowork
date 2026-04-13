@@ -15,7 +15,7 @@
 - [x] agentClient.ts transport 抽象：Web HTTP+SSE / Electron IPC 自动切换
 - [x] main 进程健康检查（Batch 2）
 - [x] 崩溃自动重连（Batch 2）
-- [ ] 统一日志链路（renderer/main/agent）（Batch 3）
+- [x] 统一日志链路（renderer/main/agent）（Batch 3）
 
 ## Acceptance
 
@@ -37,3 +37,11 @@
 | `apps/electron/src/renderer/main.tsx` | 复用 web/src/App 与样式 |
 | `apps/web/src/lib/agentClient.ts` | transport 抽象：自动检测 window.agentApi |
 | `package.json` | 新增 dev:electron / build:electron 脚本 |
+
+## Batch 3 交付清单
+
+- shared-protocol 新增 `log` 事件、`LogLevel`、`LogSource`、`LogPayload`
+- Web Vite bridge 与 Electron `AgentBridge` 改为发送结构化 `log` 事件
+- `agent-dotnet` 新增 `WriteLog`，输出 agent 来源日志
+- renderer `OUTPUT` 面板改为显示时间、来源徽标与级别样式
+- `TIMELINE` 面板补齐 `log` 事件摘要，保留当前 run 作用域

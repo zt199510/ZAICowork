@@ -1,8 +1,15 @@
-import type { AgentRpcRequest, BridgeState, StreamEvent } from '@aiide/shared-protocol'
+import type {
+  AgentRpcRequest,
+  BridgeState,
+  LogLevel,
+  LogSource,
+  StreamEvent,
+} from '@aiide/shared-protocol'
 
 export type AgentLogEntry = {
   id: string
-  level: 'info' | 'error'
+  source: LogSource
+  level: LogLevel
   message: string
   timestamp: string
 }
@@ -22,31 +29,17 @@ type StartAgentRunOptions = {
   onLog?: (entry: AgentLogEntry) => void
 }
 
-const createLogEntry = (message: string, level: AgentLogEntry['level'] = 'info'): AgentLogEntry => ({
+const createLogEntry = (
+  message: string,
+  level: LogLevel = 'info',
+  source: LogSource = 'renderer',
+): AgentLogEntry => ({
   id: crypto.randomUUID(),
+  source,
   level,
   message,
   timestamp: new Date().toISOString(),
 })
-
-const summarizeEvent = (event: StreamEvent) => {
-  switch (event.type) {
-    case 'run_started':
-      return `run_started: model=${event.payload.model}`
-    case 'token_delta':
-      return `token_delta: ${event.payload.text}`
-    case 'status':
-      return `status: ${event.payload.state} - ${event.payload.message}`
-    case 'run_completed':
-      return `run_completed: ${event.payload.outputSummary}`
-    case 'error':
-      return `error: ${event.payload.message}`
-    case 'tool_call_started':
-      return `tool_call_started: ${event.payload.toolName} — ${event.payload.inputSummary}`
-    case 'tool_call_completed':
-      return `tool_call_completed: ${event.payload.toolName} ${event.payload.status} — ${event.payload.resultPreview}`
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Transport abstraction — allows Web (HTTP+SSE) and Electron (IPC) to share
@@ -92,7 +85,7 @@ function startAgentRunWeb(options: StartAgentRunOptions): AgentRunController {
     resolveDone = resolve
   })
 
-  const log = (message: string, level: AgentLogEntry['level'] = 'info') => {
+  const log = (message: string, level: LogLevel = 'info') => {
     options.onLog?.(createLogEntry(message, level))
   }
 
@@ -121,7 +114,6 @@ function startAgentRunWeb(options: StartAgentRunOptions): AgentRunController {
     try {
       const event = JSON.parse(messageEvent.data) as StreamEvent
       options.onEvent(event)
-      log(summarizeEvent(event), event.type === 'error' ? 'error' : 'info')
 
       if (isTerminalEvent(event)) {
         finish()
@@ -217,7 +209,7 @@ function startAgentRunElectron(options: StartAgentRunOptions): AgentRunControlle
     resolveDone = resolve
   })
 
-  const log = (message: string, level: AgentLogEntry['level'] = 'info') => {
+  const log = (message: string, level: LogLevel = 'info') => {
     options.onLog?.(createLogEntry(message, level))
   }
 
@@ -232,12 +224,12 @@ function startAgentRunElectron(options: StartAgentRunOptions): AgentRunControlle
   // Subscribe to events before starting the run so we don't miss any.
   unsubscribe = api.onRunEvent(runId, (event: StreamEvent) => {
     options.onEvent(event)
-    log(summarizeEvent(event), event.type === 'error' ? 'error' : 'info')
 
     if (isTerminalEvent(event)) {
       finish()
     }
   })
+  log('已建立 IPC 运行事件订阅。')
 
   const request: AgentRpcRequest = {
     id: requestId,

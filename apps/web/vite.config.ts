@@ -4,7 +4,13 @@ import { fileURLToPath } from 'node:url'
 import { createInterface } from 'node:readline'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import type { AgentRpcEvent, AgentRpcRequest, StreamEvent } from '@aiide/shared-protocol'
+import type {
+  AgentRpcEvent,
+  AgentRpcRequest,
+  LogLevel,
+  LogSource,
+  StreamEvent,
+} from '@aiide/shared-protocol'
 
 type RunRecord = {
   runId: string
@@ -111,6 +117,22 @@ function localAgentBridge() {
     },
   })
 
+  const createLogEvent = (
+    runId: string,
+    source: LogSource,
+    level: LogLevel,
+    message: string,
+  ): StreamEvent => ({
+    type: 'log',
+    runId,
+    timestamp: new Date().toISOString(),
+    payload: {
+      source,
+      level,
+      message,
+    },
+  })
+
   const isTerminalEvent = (event: StreamEvent) =>
     event.type === 'run_completed' ||
     event.type === 'error' ||
@@ -149,7 +171,8 @@ function localAgentBridge() {
     run.child = child
     run.terminal = false
     run.canceled = false
-    broadcast(run, createStatusEvent(run.runId, 'running', 'Local bridge started agent process.'))
+    broadcast(run, createLogEvent(run.runId, 'bridge', 'info', 'Local bridge received agent.run request.'))
+    broadcast(run, createLogEvent(run.runId, 'bridge', 'info', 'Local bridge started agent process.'))
 
     const stdout = createInterface({ input: child.stdout })
     const stderr = createInterface({ input: child.stderr })
@@ -163,6 +186,7 @@ function localAgentBridge() {
         const rpcEvent = JSON.parse(line) as AgentRpcEvent
         broadcast(run, rpcEvent.params)
       } catch {
+        broadcast(run, createLogEvent(run.runId, 'bridge', 'error', 'Failed to parse agent stdout event.'))
         broadcast(run, createErrorEvent(run.runId, 'Failed to parse agent stdout event.', false))
       }
     })
@@ -172,7 +196,7 @@ function localAgentBridge() {
         return
       }
 
-      broadcast(run, createStatusEvent(run.runId, 'running', `agent stderr: ${line}`))
+      broadcast(run, createLogEvent(run.runId, 'agent', 'warn', `stderr: ${line}`))
     })
 
     child.on('error', (error: Error) => {
@@ -180,6 +204,7 @@ function localAgentBridge() {
         return
       }
 
+      broadcast(run, createLogEvent(run.runId, 'bridge', 'error', error.message))
       broadcast(run, createErrorEvent(run.runId, error.message, true))
     })
 
@@ -194,20 +219,18 @@ function localAgentBridge() {
       }
 
       if (!run.terminal && code !== 0) {
+        broadcast(
+          run,
+          createLogEvent(run.runId, 'bridge', 'error', `Agent process exited with code ${code ?? 'unknown'}.`),
+        )
         broadcast(run, createErrorEvent(run.runId, `Agent process exited with code ${code ?? 'unknown'}.`, true))
         return
-      }
-
-      if (!run.terminal) {
-        broadcast(run, createStatusEvent(run.runId, 'completed', 'Agent process exited cleanly.'))
-        run.terminal = true
-        closeClients(run)
-        scheduleCleanup(run)
       }
     })
 
     child.stdin.write(`${JSON.stringify(request)}\n`)
     child.stdin.end()
+    broadcast(run, createLogEvent(run.runId, 'bridge', 'info', 'Local bridge forwarded agent.run to agent process.'))
     sendJson(response, 202, { ok: true, runId: run.runId })
   }
 
@@ -220,6 +243,8 @@ function localAgentBridge() {
     }
 
     run.canceled = true
+
+    broadcast(run, createLogEvent(run.runId, 'bridge', 'info', 'Cancel requested; terminating agent process.'))
 
     if (!run.terminal) {
       broadcast(run, createStatusEvent(run.runId, 'canceled', 'Run canceled by user.'))
@@ -251,6 +276,7 @@ function localAgentBridge() {
     }
 
     run.clients.add(response)
+    broadcast(run, createLogEvent(run.runId, 'bridge', 'info', 'SSE event stream attached.'))
     response.on('close', () => {
       run.clients.delete(response)
     })

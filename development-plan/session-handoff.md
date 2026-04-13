@@ -155,3 +155,26 @@
   2. Phase 3 Batch 2：main 进程 agent 健康检查与崩溃自动重连
   3. Phase 3 Batch 3：统一日志链路（renderer/main/agent）
 - Next First Step: 完成 npm install（Electron 二进制），运行 npm run dev:electron 验证 renderer → main → agent 闭环
+
+---
+
+### [2026-04-13 10:56] Session Summary
+
+- Owner: Codex + 用户
+- Scope: Phase 3 Batch 3 — 统一日志链路（renderer / bridge / agent）
+- Changes:
+  1. 扩展 `@aiide/shared-protocol`：新增 `log` 事件、`LogLevel`、`LogSource`、`LogPayload`
+  2. 改造 Web Vite bridge 与 Electron `AgentBridge`：通过现有 SSE / IPC run 事件通道发送结构化日志，bridge 统一使用 `source=bridge`
+  3. 为 `agent-dotnet` 增加 `WriteLog` 帮助方法，输出请求接收、指令解析、超时/异常、正常结束等 agent 日志
+  4. renderer 改为直接消费 `log` 流事件；`OUTPUT` 面板显示时间、来源徽标与级别样式；`TIMELINE` 补齐 `[source] message` 摘要
+- Verified:
+  1. `npm run lint` 通过
+  2. `npm run build` 通过（保留既有 CSS minify warning 基线）
+  3. `npm run build:electron` 通过
+  4. `npm run build:agent` 通过
+  5. 直接执行一次 `agent.run`（`read: package.json`）验证 `log -> run_started -> tool_call -> run_completed` 事件顺序成立
+- Open Items:
+  1. 在 `npm run dev` 下手工验证 Web 端 `OUTPUT` / `TIMELINE` 是否同时展示 renderer / bridge / agent 日志来源
+  2. 在 `npm run dev:electron` 下手工验证 Electron 端表现与 Web 一致，并继续完成 Phase 3 验收
+  3. `apps/web/src/App.css` 仍存在既有语法警告，不属于本批次修复范围
+- Next First Step: 运行 `npm run dev` 与 `npm run dev:electron`，分别用 `read:` / `grep:` / `bash:` 验证统一日志链路和会话闭环

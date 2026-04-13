@@ -1,7 +1,7 @@
 # Current Status
 
-- Updated At: 2026-04-11
-- Overall Progress: 78%
+- Updated At: 2026-04-13
+- Overall Progress: 85%
 - Active Phase: Phase 3
 
 ## Completed Recently
@@ -20,15 +20,16 @@
 12. 统一工具输出截断元数据（outputTruncated）、前端截断提示、错误码标签与 retryHint 展示。
 13. Phase 3 Batch 1：Electron 工程骨架、preload 安全桥接、main 进程 AgentBridge、transport 抽象（Web HTTP+SSE / Electron IPC 自动切换）、renderer 复用 Web UI。
 14. Phase 3 Batch 2：AgentBridge 健康状态模型（idle/ready/reconnecting/failed）、dotnet 探针与自动重连、bridge 状态 IPC 通道、前端 ChatHeader 连接状态展示。
+15. Phase 3 Batch 3：统一日志链路（shared-protocol `log` 事件、Web/Electron bridge 与 agent 结构化日志、底部 OUTPUT 来源徽标）。
 
 ## In Progress
 
-1. Phase 3 Batch 3：统一日志链路（renderer/main/agent）。
+1. Phase 3 验收：Electron 下基础会话可运行、崩溃恢复后可重连 agent、Web 与 Electron 事件表现一致。
 
 ## Next Actions
 
-1. Phase 3 Batch 3：实现统一日志链路。
-2. Phase 3 验收：Electron 下基础会话可运行、崩溃恢复后可重连 agent、Web 与 Electron 事件表现一致。
+1. 在 `npm run dev` 与 `npm run dev:electron` 下手工验证统一日志链路与会话闭环。
+2. Phase 3 验收：确认崩溃恢复后可重连 agent、Web 与 Electron 事件表现一致。
 3. Phase 4：质量与开源就绪。
 
 ## Blockers

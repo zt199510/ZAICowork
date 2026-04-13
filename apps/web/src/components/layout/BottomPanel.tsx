@@ -19,6 +19,12 @@ const tabs: Array<{ value: BottomPanelTab; label: string; icon: typeof ListTodo 
   { value: 'events', label: 'TIMELINE', icon: Activity },
 ]
 
+const logSourceLabel = {
+  renderer: 'renderer',
+  bridge: 'bridge',
+  agent: 'agent',
+} as const
+
 export function BottomPanel({
   activeTab,
   onSelectTab,
@@ -46,7 +52,12 @@ export function BottomPanel({
             {logs.length === 0 ? <p className="panel-empty">No output yet...</p> : null}
             {logs.map((log) => (
               <div key={log.id} className={`log-entry log-entry--${log.level}`}>
-                <span className="log-entry__time">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+                <div className="log-entry__meta">
+                  <span className="log-entry__time">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+                  <span className={`log-entry__source log-entry__source--${log.source}`}>
+                    {logSourceLabel[log.source]}
+                  </span>
+                </div>
                 <span className="log-entry__message">{log.message}</span>
               </div>
             ))}
