@@ -29,7 +29,7 @@
 
 ## Phase 3 - Electron Shell Integration
 
-- Status: in-progress
+- Status: completed
 - Goal: 接入 Electron main/preload，托管 agent 生命周期
 - Exit Criteria:
   - renderer -> main -> agent 通道稳定
@@ -37,7 +37,7 @@
 
 ## Phase 4 - Quality & Open Source Readiness
 
-- Status: not-started
+- Status: in-progress
 - Goal: 完善测试、可观测性、开源治理
 - Exit Criteria:
   - CI 稳定通过

@@ -28,11 +28,25 @@ npm run dev
 npm run build
 ```
 
+构建 Electron Shell：
+
+```bash
+npm run build:electron
+```
+
 构建 .NET Agent：
 
 ```bash
 npm run build:agent
 ```
+
+完整质量校验：
+
+```bash
+npm run verify
+```
+
+`apps/electron/out/` 由 `npm run build:electron` 生成，不再提交到仓库。
 
 ## 项目结构
 
@@ -47,8 +61,8 @@ services/
 
 ## 当前里程碑
 
-1. 已完成 Phase 0 起步：Monorepo + 协议层 + Agent MVP 骨架
-2. 下一步进入 Phase 1：真实 Provider 接入与流式链路联调
+1. 已完成 Phase 0 - Phase 3：Monorepo、共享协议、Agent MVP、工具执行链路与 Electron Shell 集成
+2. 当前处于 Phase 4：补齐测试基线、CI 质量门禁与开源发布准备
 
 ## 开发计划留存
 

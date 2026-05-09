@@ -11,6 +11,8 @@
     "build:electron": "npm run build --workspace @aiide/electron",
     "build:agent": "dotnet build services/agent-dotnet/src/AIIde.Agent/AIIde.Agent.csproj",
     "lint": "npm run lint --workspace @aiide/web",
+    "test": "npm run test --workspace @aiide/shared-protocol",
+    "verify": "npm run lint && npm run test && npm run build && npm run build:electron && npm run build:agent",
     "preview": "npm run preview --workspace @aiide/web"
   },
   "workspaces": [

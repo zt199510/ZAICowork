@@ -243,3 +243,28 @@
   1. Active Phase 已切换到 Phase 4，下一步从 `@aiide/shared-protocol` 单元测试基线开始。
   2. `apps/web/src/App.css` 既有 CSS warning 基线仍未处理，不属于本次范围。
 - Next First Step: 启动 Phase 4，先为 `@aiide/shared-protocol` 补齐协议层单元测试与 CI 验收入口
+
+---
+
+### [2026-04-14 Phase 4 Batch 1] Session Summary
+
+- Owner: Codex + 用户
+- Scope: Phase 4 Batch 1 — shared-protocol 测试基线 + CI 门禁 + Electron 产物策略
+- Changes:
+  1. 为 `packages/shared-protocol` 新增 `tsconfig.test.json` 与 `tests/protocol.contracts.test.ts`，使用 TypeScript 编译校验固化 `StreamEvent`、Tool 输入/输出、RPC 请求/事件等协议契约。
+  2. 为 `@aiide/shared-protocol` workspace 新增 `test` 脚本；根 `package.json` 新增 `test` 与 `verify`，统一串联 `lint` / `test` / `build` / `build:electron` / `build:agent`。
+  3. 新增 `.github/workflows/ci.yml`，在 `push` / `pull_request` 上以 `ubuntu-latest` + Node 20 + .NET 9 执行 `npm ci` 与 `npm run verify`。
+  4. 将 `apps/electron/out/` 显式加入 `.gitignore`，并从 git 跟踪内容中移除，改为由 `npm run build:electron` 生成的构建产物。
+  5. 更新 `README.md`、`development-plan/phase-4.md` 与 `development-plan/current-status.md`，同步当前质量基线、验证入口与下一步阶段工作。
+- Verified:
+  1. `npm run test` 通过（shared-protocol 协议契约编译校验）。
+  2. `npm run lint` 通过。
+  3. `npm run build` 通过（保留既有 CSS minify warning 基线）。
+  4. `npm run build:electron` 通过，且 `apps/electron/out/` 不再作为受跟踪文件参与工作区差异。
+  5. `npm run build:agent` 通过，维持 0 warning / 0 error。
+  6. `npm run verify` 通过，验证仓库级质量门禁链路成立。
+- Open Items:
+  1. GitHub Actions workflow 已落地，但仍需首个远端 `push` / `pull_request` 运行结果作为 CI 全绿记录。
+  2. 下一批进入 Phase 4 Batch 2：设计 agent 集成测试与前端关键路径 E2E。
+  3. `apps/web/src/App.css` 既有 CSS warning 基线仍未处理，不属于本批范围。
+- Next First Step: 设计 agent 集成测试与前端关键路径 E2E，先明确流式事件顺序、bridge 状态变化与关键 UI 回归场景的自动化边界
